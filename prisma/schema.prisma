@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "./generated/prisma"
@@ -9,4 +6,76 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+// Represents the status of a file in the processing pipeline.
+enum FileStatus {
+  PendingIdentification
+  NeedsConfirmation
+  ReadyToMove
+  Completed
+  Error
+}
+
+// Represents a raw video file discovered in your source directory.
+model SourceFile {
+  id        String   @id @default(cuid())
+  filePath  String   @unique
+  fileSize  BigInt
+  fileType  String
+  dateAdded DateTime @default(now())
+  status    FileStatus @default(PendingIdentification)
+
+  // A SourceFile can be linked to EITHER a Movie OR a TVEpisode, but not both.
+  // This is enforced by your application's logic.
+  movieId     String?    @unique
+  movie       Movie?     @relation(fields: [movieId], references: [id])
+  tvEpisodeId String?    @unique
+  tvEpisode   TVEpisode? @relation(fields: [tvEpisodeId], references: [id])
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Represents a movie matched from TMDB.
+model Movie {
+  id          String   @id @default(cuid())
+  tmdbId      Int      @unique // The Movie Database ID.
+  title       String
+  releaseDate DateTime
+
+  sourceFile SourceFile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Represents an entire TV series matched from TMDB.
+model TVSeries {
+  id                String      @id @default(cuid())
+  tmdbId            Int         @unique // The Movie Database ID for the series.
+  name              String
+  seriesReleaseDate DateTime
+
+  episodes          TVEpisode[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Represents a single episode of a TV series.
+model TVEpisode {
+  id            String @id @default(cuid())
+  episodeName   String
+  seasonNumber  Int
+  episodeNumber Int
+
+  tvSeriesId    String
+  series        TVSeries @relation(fields: [tvSeriesId], references: [id], onDelete: Cascade)
+
+  sourceFile SourceFile?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
