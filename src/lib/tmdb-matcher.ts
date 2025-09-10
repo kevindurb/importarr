@@ -41,7 +41,7 @@ const getSearchStringsForSourceFile = (sourceFile: SourceFile) => {
 	);
 };
 
-export const createMatchForSourceFileToMovie = async (
+const createMatchForSourceFileToMovie = async (
 	sourceFile: SourceFile,
 	tmdbMovie: TmdbMovieListItem,
 ) => {
@@ -93,7 +93,7 @@ const upsertAllEpisodesForSeries = async (
 	});
 };
 
-export const createMatchForSourceFileToTVEpisode = async (
+const createMatchForSourceFileToTVEpisode = async (
 	sourceFile: SourceFile,
 	tmdbTv: TmdbTvListItem,
 	seasonNumber: number,
@@ -138,7 +138,7 @@ export const createMatchForSourceFileToTVEpisode = async (
 	});
 };
 
-export const findMovieMatchForSourceFile = async (sourceFile: SourceFile) => {
+const findMovieMatchForSourceFile = async (sourceFile: SourceFile) => {
 	const searchStrings = getSearchStringsForSourceFile(sourceFile);
 	console.log("Search strings", searchStrings);
 
@@ -151,12 +151,10 @@ export const findMovieMatchForSourceFile = async (sourceFile: SourceFile) => {
 		)
 	).flat();
 
-	const match = results.at(0);
-	if (!match) return;
-	await createMatchForSourceFileToMovie(sourceFile, match);
+	return results.at(0);
 };
 
-export const findTvMatchForSourceFile = async (sourceFile: SourceFile) => {
+const findTvMatchForSourceFile = async (sourceFile: SourceFile) => {
 	const searchStrings = getSearchStringsForSourceFile(sourceFile);
 	console.log("Search strings", searchStrings);
 
@@ -169,16 +167,7 @@ export const findTvMatchForSourceFile = async (sourceFile: SourceFile) => {
 		)
 	).flat();
 
-	const match = results.at(0);
-	if (!match) return;
-	const seasonNumber = parseSeasonNumber(sourceFile) ?? 1;
-	const episodeNumber = parseEpisodeNumber(sourceFile) ?? 1;
-	await createMatchForSourceFileToTVEpisode(
-		sourceFile,
-		match,
-		seasonNumber,
-		episodeNumber,
-	);
+	return results.at(0);
 };
 
 export const refreshUnmatchedFiles = async () => {
@@ -193,9 +182,20 @@ export const refreshUnmatchedFiles = async () => {
 
 	for (const sourceFile of unmatchedFiles) {
 		if (looksLikeTVShow(sourceFile)) {
-			await findTvMatchForSourceFile(sourceFile);
+			const match = await findTvMatchForSourceFile(sourceFile);
+			if (!match) continue;
+			const seasonNumber = parseSeasonNumber(sourceFile) ?? 1;
+			const episodeNumber = parseEpisodeNumber(sourceFile) ?? 1;
+			await createMatchForSourceFileToTVEpisode(
+				sourceFile,
+				match,
+				seasonNumber,
+				episodeNumber,
+			);
 		} else {
-			await findMovieMatchForSourceFile(sourceFile);
+			const match = await findMovieMatchForSourceFile(sourceFile);
+			if (!match) continue;
+			await createMatchForSourceFileToMovie(sourceFile, match);
 		}
 	}
 };
