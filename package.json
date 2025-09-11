@@ -1,22 +1,22 @@
 {
-	"name": "importarr",
-	"module": "index.ts",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"start": "bun --watch --hot ./src/index.ts"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.2.3",
-		"@types/bun": "latest",
-		"lefthook": "^1.12.4",
-		"prisma": "^6.15.0"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
-	},
-	"dependencies": {
-		"@prisma/client": "^6.15.0",
-		"hono": "^4.9.6"
-	}
+  "name": "importarr",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run ./src/app"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.3",
+    "@types/bun": "latest",
+    "lefthook": "^1.12.4",
+    "prisma": "^6.15.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.15.0",
+    "hono": "^4.9.6"
+  }
 }
