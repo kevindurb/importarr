@@ -15,33 +15,35 @@ export const ImportListPage: FC = async () => {
       <tr>
         <th scope='row'>{getRelativePath(file)}</th>
         <td>destination</td>
-        <td></td>
+        <td>
+          <div class='d-flex gap-2'>
+            <form method='post' action={`/import/${file.id}`}>
+              <button type='submit' class='btn btn-danger btn-sm'>
+                <i class='bi bi-download' />
+              </button>
+            </form>
+          </div>
+        </td>
       </tr>
     );
   });
 
   return (
     <Layout>
-      <nav>
-        <ul>
-          <li>
-            <h1>Import</h1>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <details class='dropdown'>
-              <summary>Actions</summary>
-              <ul>
-                <li>
-                  <a href='/import/all'>Import All</a>
-                </li>
-              </ul>
-            </details>
-          </li>
-        </ul>
-      </nav>
-      <table>
+      <div class='d-flex justify-content-between align-items-center'>
+        <h1>Import</h1>
+        <details class='dropdown'>
+          <summary class='btn btn-primary dropdown-toggle'>Actions</summary>
+          <ul class='dropdown-menu show'>
+            <li>
+              <a class='dropdown-item' href='/import/all'>
+                Import All
+              </a>
+            </li>
+          </ul>
+        </details>
+      </div>
+      <table class='table align-middle'>
         <thead>
           <tr>
             <th>Source</th>

@@ -12,6 +12,11 @@ export const Layout: FC = ({ children }) => html`
         <meta name='color-scheme' content='light dark' />
         <link rel='stylesheet' href='bootstrap/dist/css/bootstrap.min.css' />
         <link rel='stylesheet' href='bootstrap-icons/font/bootstrap-icons.min.css' />
+        <style>{`
+          body {
+            padding-top: 56px;
+          }
+        `}</style>
       </head>
       <body>
         <main class='container'>

@@ -21,6 +21,7 @@ const addNewFiles = async (files: File[]) => {
           filePath,
           fileSize,
           fileType,
+          status: 'PendingIdentification',
         },
       });
     }

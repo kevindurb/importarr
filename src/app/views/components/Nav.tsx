@@ -2,7 +2,7 @@ import type { FC } from 'hono/jsx';
 
 export const Nav: FC = () => (
   <nav class='navbar navbar-expand fixed-top bg-body-tertiary'>
-    <div class='container-fluid'>
+    <div class='container'>
       <a class='navbar-brand' href='/'>
         Importarr
       </a>
