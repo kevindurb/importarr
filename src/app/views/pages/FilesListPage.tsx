@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany();
 
-  const filesList = files.map(async (file) => {
+  const filesList = files.map((file) => {
     const metadata = getMetadataForSourceFile(file);
     return (
       <tr>
@@ -25,7 +25,18 @@ export const FilesListPage: FC = async () => {
         <td>
           <FileMatchStatus file={file} />
         </td>
-        <td></td>
+        <td>
+          <form>
+            <button type='submit' class='secondary'>
+              <i class='bi bi-pencil' />
+            </button>
+          </form>
+          <form>
+            <button type='submit'>
+              <i class='bi bi-check' />
+            </button>
+          </form>
+        </td>
       </tr>
     );
   });
@@ -62,7 +73,7 @@ export const FilesListPage: FC = async () => {
             <th />
           </tr>
         </thead>
-        <tbody>{await Promise.all(filesList)}</tbody>
+        <tbody>{filesList}</tbody>
       </table>
     </Layout>
   );

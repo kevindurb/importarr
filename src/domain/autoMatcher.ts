@@ -21,7 +21,7 @@ const createMatchForSourceFileToMovie = async (
   if (existingMovie) {
     await prisma.sourceFile.update({
       where: { id: sourceFile.id },
-      data: { movieId: existingMovie.id },
+      data: { movieId: existingMovie.id, status: 'NeedsConfirmation' },
     });
   } else {
     const movie = await prisma.movie.create({
@@ -34,7 +34,7 @@ const createMatchForSourceFileToMovie = async (
 
     await prisma.sourceFile.update({
       where: { id: sourceFile.id },
-      data: { movieId: movie.id },
+      data: { movieId: movie.id, status: 'NeedsConfirmation' },
     });
   }
 };
@@ -98,7 +98,7 @@ const createMatchForSourceFileToTVEpisode = async (
 
   await prisma.sourceFile.update({
     where: { id: sourceFile.id },
-    data: { tvEpisodeId: episode.id },
+    data: { tvEpisodeId: episode.id, status: 'NeedsConfirmation' },
   });
 };
 

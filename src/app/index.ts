@@ -13,10 +13,10 @@ app.use(
 );
 
 app.use(
-  '/@picocss/pico/*',
+  '/bootstrap/*',
   serveStatic({
-    root: './node_modules/@picocss/pico/',
-    rewriteRequestPath: (path) => path.replace(/^\/@picocss\/pico\//, ''),
+    root: './node_modules/bootstrap/',
+    rewriteRequestPath: (path) => path.replace(/^\/bootstrap\//, ''),
   }),
 );
 
