@@ -5,18 +5,18 @@ import { router } from './routes/router';
 const app = new Hono();
 
 app.use(
-  '/public/bootstrap-icons/*',
+  '/bootstrap-icons/*',
   serveStatic({
     root: './node_modules/bootstrap-icons/',
-    rewriteRequestPath: (path) => path.replace(/^\/public\/bootstrap-icons\//, ''),
+    rewriteRequestPath: (path) => path.replace(/^\/bootstrap-icons\//, ''),
   }),
 );
 
 app.use(
-  '/public/@picocss/pico/*',
+  '/@picocss/pico/*',
   serveStatic({
     root: './node_modules/@picocss/pico/',
-    rewriteRequestPath: (path) => path.replace(/^\/public\/@picocss\/pico\//, ''),
+    rewriteRequestPath: (path) => path.replace(/^\/@picocss\/pico\//, ''),
   }),
 );
 
