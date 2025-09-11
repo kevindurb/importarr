@@ -1,7 +1,6 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
 import { PrismaClient } from '../../../../prisma/generated/prisma';
-import { getMetadataForSourceFile, isTv } from '../../../domain/metadata';
 import { getRelativePath } from '../../../util/file';
 import { FileMatchStatus } from '../components/FileMatchStatus';
 import { Layout } from '../layouts/Layout';
@@ -14,16 +13,10 @@ export const FilesListPage: FC = async () => {
   });
 
   const filesList = files.map((file) => {
-    const metadata = getMetadataForSourceFile(file);
     const hasMatch = Boolean(file.movieId || file.tvEpisodeId);
     return (
       <tr>
         <th scope='row'>{getRelativePath(file)}</th>
-        <td>
-          {isTv(metadata)
-            ? `S${metadata.seasons.join('')}E${metadata.episodeNumbers.join('')}`
-            : ''}
-        </td>
         <td>{file.fileType}</td>
         <td>{byteSize(Number(file.fileSize)).toString()}</td>
         <td>
@@ -64,7 +57,6 @@ export const FilesListPage: FC = async () => {
         <thead>
           <tr>
             <th>File</th>
-            <th>Meta</th>
             <th>Type</th>
             <th>Size</th>
             <th>Match</th>

@@ -1,6 +1,7 @@
 import type { FC } from 'hono/jsx';
 import { PrismaClient } from '../../../../prisma/generated/prisma';
 import { getRelativePath } from '../../../util/file';
+import { FileDestinationPath } from '../components/FileDestinationPath';
 import { Layout } from '../layouts/Layout';
 
 const prisma = new PrismaClient();
@@ -14,7 +15,9 @@ export const ImportListPage: FC = async () => {
     return (
       <tr>
         <th scope='row'>{getRelativePath(file)}</th>
-        <td>destination</td>
+        <td>
+          <FileDestinationPath file={file} />
+        </td>
         <td>
           <div class='d-flex gap-2'>
             <form method='post' action={`/import/${file.id}`}>
