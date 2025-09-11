@@ -16,6 +16,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@ctrl/video-filename-parser": "^5.4.1",
     "@prisma/client": "^6.15.0",
     "hono": "^4.9.6"
   }

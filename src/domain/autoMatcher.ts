@@ -1,5 +1,3 @@
-import path from 'node:path';
-
 import { PrismaClient, type SourceFile, type TVSeries } from '../../prisma/generated/prisma';
 import {
   getTvDetails,
@@ -8,30 +6,9 @@ import {
   searchTv,
 } from '../infrastructure/tmdb/tmdbService';
 import type { TmdbMovieListItem, TmdbTvListItem } from '../infrastructure/tmdb/types';
-import { unique } from '../util/array';
-import { getRelativePath } from '../util/file';
-import {
-  extractLeadingWords,
-  looksLikeTVShow,
-  parseEpisodeNumber,
-  parseSeasonNumber,
-  removeNonWordChars,
-} from '../util/source-file';
+import { getMetadataForSourceFile, isTv, type ParsedMovie, type ParsedShow } from './metadata';
 
 const prisma = new PrismaClient();
-
-const getSearchStringsForSourceFile = (sourceFile: SourceFile) => {
-  const parentDir = path.dirname(getRelativePath(sourceFile));
-  const fileName = path.basename(sourceFile.filePath, path.extname(sourceFile.filePath));
-  return unique(
-    [
-      removeNonWordChars(parentDir),
-      removeNonWordChars(fileName),
-      extractLeadingWords(parentDir),
-      extractLeadingWords(fileName),
-    ].filter(Boolean),
-  );
-};
 
 const createMatchForSourceFileToMovie = async (
   sourceFile: SourceFile,
@@ -125,36 +102,29 @@ const createMatchForSourceFileToTVEpisode = async (
   });
 };
 
-const findMovieMatchForSourceFile = async (sourceFile: SourceFile) => {
-  const searchStrings = getSearchStringsForSourceFile(sourceFile);
-  console.log('Search strings', searchStrings);
-
-  const results = (
-    await Promise.all(
-      searchStrings.map(async (searchString) => {
-        const response = await searchMovies(searchString);
-        return response.results;
-      }),
-    )
-  ).flat();
-
-  return results.at(0);
+const autoMatchTv = async (metadata: ParsedShow, sourceFile: SourceFile) => {
+  const { results } = await searchTv(metadata.title);
+  const match = results.at(0);
+  if (!match) return;
+  const seasonNumber = metadata.seasons.at(0) ?? 1;
+  const episodeNumber = metadata.episodeNumbers.at(0) ?? 1;
+  await createMatchForSourceFileToTVEpisode(sourceFile, match, seasonNumber, episodeNumber);
 };
 
-const findTvMatchForSourceFile = async (sourceFile: SourceFile) => {
-  const searchStrings = getSearchStringsForSourceFile(sourceFile);
-  console.log('Search strings', searchStrings);
+const autoMatchMovie = async (metadata: ParsedMovie, sourceFile: SourceFile) => {
+  const { results } = await searchMovies(metadata.title);
+  const match = results.at(0);
+  if (!match) return;
+  await createMatchForSourceFileToMovie(sourceFile, match);
+};
 
-  const results = (
-    await Promise.all(
-      searchStrings.map(async (searchString) => {
-        const response = await searchTv(searchString);
-        return response.results;
-      }),
-    )
-  ).flat();
-
-  return results.at(0);
+export const autoMatchFile = async (sourceFile: SourceFile) => {
+  const metadata = getMetadataForSourceFile(sourceFile);
+  if (isTv(metadata)) {
+    await autoMatchTv(metadata, sourceFile);
+  } else {
+    await autoMatchMovie(metadata, sourceFile);
+  }
 };
 
 export const refreshUnmatchedFiles = async () => {
@@ -168,16 +138,6 @@ export const refreshUnmatchedFiles = async () => {
   console.log('Finding matches for unmatched files', unmatchedFiles.length);
 
   for (const sourceFile of unmatchedFiles) {
-    if (looksLikeTVShow(sourceFile)) {
-      const match = await findTvMatchForSourceFile(sourceFile);
-      if (!match) continue;
-      const seasonNumber = parseSeasonNumber(sourceFile) ?? 1;
-      const episodeNumber = parseEpisodeNumber(sourceFile) ?? 1;
-      await createMatchForSourceFileToTVEpisode(sourceFile, match, seasonNumber, episodeNumber);
-    } else {
-      const match = await findMovieMatchForSourceFile(sourceFile);
-      if (!match) continue;
-      await createMatchForSourceFileToMovie(sourceFile, match);
-    }
+    await autoMatchFile(sourceFile);
   }
 };
