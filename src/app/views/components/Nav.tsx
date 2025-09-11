@@ -4,7 +4,9 @@ export const Nav: FC = () => (
   <nav>
     <ul>
       <li>
-        <strong>Importarr</strong>
+        <a href='/'>
+          <strong>Importarr</strong>
+        </a>
       </li>
     </ul>
     <ul>
