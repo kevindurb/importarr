@@ -23,7 +23,8 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     });
     return (
       <b>
-        {tvEpisode?.series.name} {tvEpisode?.episodeName}
+        {tvEpisode?.series.name} {tvEpisode?.episodeName} S{tvEpisode?.seasonNumber} E
+        {tvEpisode?.episodeNumber}
       </b>
     );
   }

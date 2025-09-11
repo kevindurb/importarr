@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 export const ImportListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({
     where: { status: 'ReadyToMove' },
+    orderBy: { filePath: 'asc' },
   });
 
   const filesList = files.map((file) => {
