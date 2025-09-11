@@ -1,9 +1,10 @@
+import { html } from 'hono/html';
 import type { FC } from 'hono/jsx';
 import { Nav } from '../components/Nav';
 
-export const Layout: FC = ({ children }) => (
-  <>
-    {'<!doctype html>'}
+export const Layout: FC = ({ children }) => html`
+  <!doctype html>
+  ${(
     <html lang='en'>
       <head>
         <meta charset='utf-8' />
@@ -21,5 +22,5 @@ export const Layout: FC = ({ children }) => (
         </main>
       </body>
     </html>
-  </>
-);
+  )}
+`;
