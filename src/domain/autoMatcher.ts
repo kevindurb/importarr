@@ -28,7 +28,7 @@ const createMatchForSourceFileToMovie = async (
       data: {
         tmdbId: tmdbMovie.id,
         title: tmdbMovie.title,
-        releaseDate: tmdbMovie.release_date,
+        releaseDate: new Date(tmdbMovie.release_date),
       },
     });
 
@@ -71,7 +71,7 @@ const createMatchForSourceFileToTVEpisode = async (
     create: {
       tmdbId: tmdbTv.id,
       name: tmdbTv.name,
-      seriesReleaseDate: tmdbTv.first_air_date,
+      seriesReleaseDate: new Date(tmdbTv.first_air_date),
     },
   });
 

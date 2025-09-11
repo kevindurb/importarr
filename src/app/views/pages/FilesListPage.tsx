@@ -1,7 +1,8 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
-import { PrismaClient, type SourceFile } from '../../../../prisma/generated/prisma';
+import { PrismaClient } from '../../../../prisma/generated/prisma';
 import { getMetadataForSourceFile, isTv } from '../../../domain/metadata';
+import { FileMatchStatus } from '../components/FileMatchStatus';
 import { Layout } from '../layouts/Layout';
 
 const prisma = new PrismaClient();
@@ -9,21 +10,11 @@ const prisma = new PrismaClient();
 export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany();
 
-  const renderMatch = (file: SourceFile) => {
-    if (file.movieId) {
-      return <h6>Movie Match!</h6>;
-    }
-    if (file.tvEpisodeId) {
-      return <h6>TV Episode Match!</h6>;
-    }
-    return <i>No Match</i>;
-  };
-
-  const filesList = files.map((file) => {
+  const filesList = files.map(async (file) => {
     const metadata = getMetadataForSourceFile(file);
     return (
       <tr>
-        <td>{metadata.title}</td>
+        <th scope='row'>{metadata.title}</th>
         <td>
           {isTv(metadata)
             ? `S${metadata.seasons.join('')}E${metadata.episodeNumbers.join('')}`
@@ -31,14 +22,35 @@ export const FilesListPage: FC = async () => {
         </td>
         <td>{file.fileType}</td>
         <td>{byteSize(Number(file.fileSize)).toString()}</td>
-        <td>{renderMatch(file)}</td>
+        <td>
+          <FileMatchStatus file={file} />
+        </td>
+        <td></td>
       </tr>
     );
   });
 
   return (
     <Layout>
-      <h1>Files</h1>
+      <nav>
+        <ul>
+          <li>
+            <h1>Files</h1>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <details class='dropdown'>
+              <summary>Actions</summary>
+              <ul>
+                <li>
+                  <a href='/files/refresh'>Refresh Files</a>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </nav>
       <table>
         <thead>
           <tr>
@@ -47,9 +59,10 @@ export const FilesListPage: FC = async () => {
             <th>Type</th>
             <th>Size</th>
             <th>Match</th>
+            <th />
           </tr>
         </thead>
-        <tbody>{filesList}</tbody>
+        <tbody>{await Promise.all(filesList)}</tbody>
       </table>
     </Layout>
   );

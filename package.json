@@ -18,8 +18,11 @@
   },
   "dependencies": {
     "@ctrl/video-filename-parser": "^5.4.1",
+    "@hono/node-server": "^1.19.2",
+    "@picocss/pico": "^2.1.1",
     "@prisma/client": "^6.15.0",
     "byte-size": "^9.0.1",
-    "hono": "^4.9.6"
+    "hono": "^4.9.6",
+    "lucide": "^0.544.0"
   }
 }
