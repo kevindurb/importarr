@@ -9,13 +9,13 @@ const prisma = new PrismaClient();
 
 export const FileMatchStatus: FC<Props> = async ({ file }) => {
   if (file.movieId) {
-    const movie = await prisma.movie.findUnique({
+    const movie = await prisma.movie.findUniqueOrThrow({
       where: { id: file.movieId },
     });
-    return <b>{movie?.title}</b>;
+    return <b>{movie.title}</b>;
   }
   if (file.tvEpisodeId) {
-    const tvEpisode = await prisma.tVEpisode.findUnique({
+    const tvEpisode = await prisma.tVEpisode.findUniqueOrThrow({
       where: { id: file.tvEpisodeId },
       include: {
         series: true,
@@ -23,8 +23,8 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     });
     return (
       <b>
-        {tvEpisode?.series.name} {tvEpisode?.episodeName} S{tvEpisode?.seasonNumber} E
-        {tvEpisode?.episodeNumber}
+        {tvEpisode.series.name} {tvEpisode.episodeName} S{tvEpisode.seasonNumber} E
+        {tvEpisode.episodeNumber}
       </b>
     );
   }

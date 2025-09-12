@@ -85,7 +85,7 @@ const createMatchForSourceFileToTVEpisode = async (
 
   if (!episode) {
     await upsertAllEpisodesForSeries(tmdbTv.id, series);
-    episode = await prisma.tVEpisode.findFirst({
+    episode = await prisma.tVEpisode.findFirstOrThrow({
       where: {
         seasonNumber,
         episodeNumber,
@@ -93,8 +93,6 @@ const createMatchForSourceFileToTVEpisode = async (
       },
     });
   }
-
-  if (!episode) throw new Error('error finding episode after creating');
 
   await prisma.sourceFile.update({
     where: { id: sourceFile.id },

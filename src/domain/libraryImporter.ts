@@ -18,10 +18,9 @@ const buildDestinationPathForMovie = (file: SourceFile, movie: Movie) => {
 };
 
 const buildDestinationPathForTvEpisode = async (file: SourceFile, tvEpisode: TVEpisode) => {
-  const tvSeries = await prisma.tVSeries.findUnique({
+  const tvSeries = await prisma.tVSeries.findUniqueOrThrow({
     where: { id: tvEpisode.tvSeriesId },
   });
-  if (!tvSeries) throw new Error('TV Series missing for tv episode');
   const releaseDate = new Date(tvSeries.seriesReleaseDate);
 
   return path.join(
@@ -36,18 +35,16 @@ export const buildDestinationPathForFile = async (
   file: SourceFile,
 ): Promise<string | undefined> => {
   if (file.movieId) {
-    const movie = await prisma.movie.findUnique({
+    const movie = await prisma.movie.findUniqueOrThrow({
       where: { id: file.movieId },
     });
-    if (!movie) throw new Error('Movie missing for match');
     return buildDestinationPathForMovie(file, movie);
   }
 
   if (file.tvEpisodeId) {
-    const tvEpisode = await prisma.tVEpisode.findUnique({
+    const tvEpisode = await prisma.tVEpisode.findUniqueOrThrow({
       where: { id: file.tvEpisodeId },
     });
-    if (!tvEpisode) throw new Error('TV Episode missing for match');
     return await buildDestinationPathForTvEpisode(file, tvEpisode);
   }
 };

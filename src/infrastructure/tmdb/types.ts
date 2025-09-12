@@ -43,3 +43,6 @@ export type TmdbTvDetails = TmdbTvListItem & {
   number_of_seasons: number;
   seasons: TmdbTvSeasonListItem[];
 };
+
+export const isTvSeries = (item: TmdbMovieListItem | TmdbTvListItem): item is TmdbTvListItem =>
+  'first_air_date' in item;

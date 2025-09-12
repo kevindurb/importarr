@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { PrismaClient } from '../../../prisma/generated/prisma';
 import { refreshUnmatchedFiles } from '../../domain/autoMatcher';
 import { refreshFiles } from '../../domain/sourceFileImporter';
+import { FileMatchEditor } from '../views/pages/FileMatchEditor';
 import { FilesListPage } from '../views/pages/FilesListPage';
 
 const prisma = new PrismaClient();
@@ -22,3 +23,7 @@ filesRouter.post('/:fileId/approve', async (c) => {
   });
   return c.redirect('/files');
 });
+
+filesRouter.get('/:fileId/match', async (c) =>
+  c.html(<FileMatchEditor fileId={c.req.param('fileId')} query={c.req.query('query')} />),
+);

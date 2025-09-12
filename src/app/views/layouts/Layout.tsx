@@ -10,8 +10,8 @@ export const Layout: FC = ({ children }) => html`
         <meta charset='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='color-scheme' content='light dark' />
-        <link rel='stylesheet' href='bootstrap/dist/css/bootstrap.min.css' />
-        <link rel='stylesheet' href='bootstrap-icons/font/bootstrap-icons.min.css' />
+        <link rel='stylesheet' href='/bootstrap/dist/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/bootstrap-icons/font/bootstrap-icons.min.css' />
         <style>{`
           body {
             padding-top: 56px;
