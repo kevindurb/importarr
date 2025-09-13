@@ -44,5 +44,7 @@ export type TmdbTvDetails = TmdbTvListItem & {
   seasons: TmdbTvSeasonListItem[];
 };
 
+export type TmdbMovieDetails = TmdbMovieListItem & {};
+
 export const isTvSeries = (item: TmdbMovieListItem | TmdbTvListItem): item is TmdbTvListItem =>
   'first_air_date' in item;

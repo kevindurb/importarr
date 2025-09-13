@@ -48,6 +48,7 @@ export const FileMatchEditor: FC<Props> = async ({ fileId, query, isTv }) => {
               action={`/files/${fileId}/match`}
               class='card-img-overlay d-flex justify-content-end align-items-start'
             >
+              <input type='hidden' name='isTv' value={isTv ? '1' : '0'} />
               <input type='hidden' name='tmdbId' value={result.id} />
               <button type='submit' class='btn btn-primary'>
                 <i class='bi bi-check' />
