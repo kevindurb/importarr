@@ -24,13 +24,13 @@ export const FilesListPage: FC = async () => {
           <FileMatchStatus file={file} />
         </td>
         <td>
-          <div class='d-flex gap-2'>
-            <a href={`/files/${file.id}/match`} class='btn btn-warning btn-sm'>
-              <i class='bi bi-pencil' />
+          <div class='buttons is-flex-wrap-nowrap'>
+            <a href={`/files/${file.id}/match`} class='button is-warning'>
+              <i class='material-symbols-outlined'>edit</i>
             </a>
             <form method='post' action={`/files/${file.id}/approve`}>
-              <button type='submit' class='btn btn-success btn-sm' disabled={!hasMatch}>
-                <i class='bi bi-check' />
+              <button class='button is-success' disabled={!hasMatch} type='submit'>
+                <i class='material-symbols-outlined'>check</i>
               </button>
             </form>
           </div>
@@ -41,20 +41,20 @@ export const FilesListPage: FC = async () => {
 
   return (
     <Layout>
-      <div class='d-flex justify-content-between align-items-center'>
-        <h1>Matching</h1>
-        <details class='dropdown'>
-          <summary class='btn btn-primary dropdown-toggle'>Actions</summary>
-          <ul class='dropdown-menu show'>
-            <li>
+      <div class='is-flex is-justify-content-space-between is-align-items-center'>
+        <h1 class='title'>Matching</h1>
+        <details class='dropdown is-active'>
+          <summary class='dropdown-trigger button'>Actions</summary>
+          <div class='dropdown-menu'>
+            <div class='dropdown-content'>
               <a class='dropdown-item' href='/files/refresh'>
                 Refresh Files
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </details>
       </div>
-      <table class='table align-middle'>
+      <table class='table is-vcentered'>
         <thead>
           <tr>
             <th>File</th>

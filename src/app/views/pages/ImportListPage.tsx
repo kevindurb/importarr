@@ -20,13 +20,11 @@ export const ImportListPage: FC = async () => {
           <FileDestinationPath file={file} />
         </td>
         <td>
-          <div class='d-flex gap-2'>
-            <form method='post' action={`/import/${file.id}`}>
-              <button type='submit' class='btn btn-danger btn-sm'>
-                <i class='bi bi-download' />
-              </button>
-            </form>
-          </div>
+          <form method='post' action={`/import/${file.id}`}>
+            <button type='submit' class='button is-danger'>
+              <i class='material-symbols-outlined'>download</i>
+            </button>
+          </form>
         </td>
       </tr>
     );
@@ -36,18 +34,18 @@ export const ImportListPage: FC = async () => {
     <Layout>
       <div class='is-flex is-justify-content-space-between is-align-items-center'>
         <h1 class='title'>Import</h1>
-        <details class='dropdown'>
-          <summary class='btn btn-primary dropdown-toggle'>Actions</summary>
-          <ul class='dropdown-menu show'>
-            <li>
+        <details class='dropdown is-active'>
+          <summary class='dropdown-trigger button'>Actions</summary>
+          <div class='dropdown-menu'>
+            <div class='dropdown-content'>
               <a class='dropdown-item' href='/import/all'>
                 Import All
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </details>
       </div>
-      <table class='table align-middle'>
+      <table class='table is-vcentered'>
         <thead>
           <tr>
             <th>Source</th>
