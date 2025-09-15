@@ -3,7 +3,6 @@ import { Hono } from 'hono';
 import z from 'zod';
 import { PrismaClient } from '../../../prisma/generated/prisma';
 import { refreshUnmatchedFiles } from '../../domain/autoMatcher';
-import { createMatchForSourceFileToTVEpisode } from '../../domain/createMatch';
 import { refreshFiles } from '../../domain/sourceFileImporter';
 import { FileMatchEditor } from '../views/pages/FileMatchEditor';
 import { FilesListPage } from '../views/pages/FilesListPage';
@@ -35,20 +34,29 @@ filesRouter.post(
   '/:fileId/match',
   zValidator(
     'form',
-    z.object({
-      tmdbId: z.string().transform((id) => Number.parseInt(id)),
-      isTV: z.enum(['1', '0']).transform((isTV) => isTV === '1'),
-    }),
+    z.union([
+      z.object({
+        tmdbId: z.string().transform((id) => Number.parseInt(id)),
+        isTV: z.literal('1').transform(() => true as const),
+        season: z.number(),
+        episode: z.number(),
+      }),
+      z.object({
+        tmdbId: z.string().transform((id) => Number.parseInt(id)),
+        isTV: z.literal('0').transform(() => false as const),
+      }),
+    ]),
   ),
   async (c) => {
     const fileId = c.req.param('fileId');
-    const { isTV, tmdbId } = c.req.valid('form');
+    const data = c.req.valid('form');
     const file = await prisma.sourceFile.findUniqueOrThrow({
       where: { id: fileId },
     });
-    if (isTV) {
-      // await createMatchForSourceFileToTVEpisode(file, );
-      // do things
+    if (data.isTV) {
+      console.log('match tv', file);
+    } else {
+      console.log('match movie', file);
     }
   },
 );

@@ -20,6 +20,14 @@ app.use(
   }),
 );
 
+app.use(
+  '/bulma/*',
+  serveStatic({
+    root: './node_modules/bulma/',
+    rewriteRequestPath: (path) => path.replace(/^\/bulma\//, ''),
+  }),
+);
+
 app.route('/', router);
 
 export default app;

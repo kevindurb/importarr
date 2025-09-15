@@ -1,23 +1,21 @@
 import type { FC } from 'hono/jsx';
 
 export const Nav: FC = () => (
-  <nav class='navbar navbar-expand fixed-top bg-body-tertiary'>
-    <div class='container'>
-      <a class='navbar-brand' href='/'>
+  <nav class='navbar is-fixed-top'>
+    <div class='navbar-brand'>
+      <a class='navbar-item' href='/'>
         Importarr
       </a>
+    </div>
 
-      <div class='navbar-nav'>
-        <div class='nav-item'>
-          <a class='nav-link' href='/files'>
-            Matching
-          </a>
-        </div>
-        <div class='nav-item'>
-          <a class='nav-link' href='/import'>
-            Import
-          </a>
-        </div>
+    <div class='navbar-menu'>
+      <div class='navbar-start'>
+        <a class='navbar-item' href='/files'>
+          Matching
+        </a>
+        <a class='navbar-item' href='/import'>
+          Import
+        </a>
       </div>
     </div>
   </nav>

@@ -34,8 +34,8 @@ export const ImportListPage: FC = async () => {
 
   return (
     <Layout>
-      <div class='d-flex justify-content-between align-items-center'>
-        <h1>Import</h1>
+      <div class='is-flex is-justify-content-space-between is-align-items-center'>
+        <h1 class='title'>Import</h1>
         <details class='dropdown'>
           <summary class='btn btn-primary dropdown-toggle'>Actions</summary>
           <ul class='dropdown-menu show'>
