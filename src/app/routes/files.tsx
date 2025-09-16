@@ -4,6 +4,7 @@ import z from 'zod';
 import { PrismaClient } from '../../../prisma/generated/prisma';
 import { refreshUnmatchedFiles } from '../../domain/autoMatcher';
 import { refreshFiles } from '../../domain/sourceFileImporter';
+import { stringToInt } from '../../util/zod';
 import { FilesListPage } from '../views/pages/FilesListPage';
 import { MatchWizardPage } from '../views/pages/MatchWizardPage/MatchWizardPage';
 
@@ -26,19 +27,33 @@ filesRouter.post('/:fileId/approve', async (c) => {
   return c.redirect('/files');
 });
 
-filesRouter.get('/:fileId/match', async (c) => {
-  const isTv = c.req.query('isTv');
-  return c.html(
-    <MatchWizardPage
-      fileId={c.req.param('fileId')}
-      isTv={isTv === '1' ? true : isTv === '0' ? false : undefined}
-      search={c.req.query('search')}
-      tmdbId={Number.parseInt(c.req.query('tmdbId') ?? '0')}
-      seasonNumber={Number.parseInt(c.req.query('seasonNumber') ?? '0')}
-      episodeNumber={Number.parseInt(c.req.query('episodeNumber') ?? '0')}
-    />,
-  );
-});
+filesRouter.get(
+  '/:fileId/match',
+  zValidator(
+    'param',
+    z.object({
+      isTv: z.stringbool().optional(),
+      search: z.string().optional(),
+      tmdbId: stringToInt.optional(),
+      seasonNumber: stringToInt.optional(),
+      episodeNumber: stringToInt.optional(),
+    }),
+  ),
+  async (c) => {
+    const { isTv, search, tmdbId, seasonNumber, episodeNumber } = c.req.valid('param');
+
+    return c.html(
+      <MatchWizardPage
+        fileId={c.req.param('fileId')}
+        isTv={isTv}
+        search={search}
+        tmdbId={tmdbId}
+        seasonNumber={seasonNumber}
+        episodeNumber={episodeNumber}
+      />,
+    );
+  },
+);
 
 filesRouter.post(
   '/:fileId/match',
@@ -46,14 +61,14 @@ filesRouter.post(
     'form',
     z.union([
       z.object({
-        tmdbId: z.string().transform((id) => Number.parseInt(id)),
-        isTV: z.literal('1').transform(() => true as const),
-        seasonNumber: z.string().transform((id) => Number.parseInt(id)),
-        episodeNumber: z.string().transform((id) => Number.parseInt(id)),
+        tmdbId: stringToInt,
+        isTV: z.stringbool(),
+        seasonNumber: stringToInt,
+        episodeNumber: stringToInt,
       }),
       z.object({
-        tmdbId: z.string().transform((id) => Number.parseInt(id)),
-        isTV: z.literal('0').transform(() => false as const),
+        tmdbId: stringToInt,
+        isTV: z.stringbool(),
       }),
     ]),
   ),
