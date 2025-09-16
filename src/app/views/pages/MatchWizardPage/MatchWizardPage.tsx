@@ -42,7 +42,7 @@ export const MatchWizardPage: FC<Props> = async ({
     <Layout>
       <h1 class='title'>{getRelativePath(file)}</h1>
       <form method='get' action={`/files/${fileId}/match`}>
-        <input type='hidden' name='isTv' value={isTv ? '1' : '0'} />
+        {isTv !== undefined ? <input type='hidden' name='isTv' value={isTv ? '1' : '0'} /> : null}
         {renderStep()}
       </form>
     </Layout>
