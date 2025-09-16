@@ -25,9 +25,6 @@ export const FilesListPage: FC = async () => {
         </td>
         <td>
           <div class='buttons is-flex-wrap-nowrap'>
-            <a href={`/files/${file.id}/match`} class='button is-warning'>
-              <i class='material-symbols-outlined'>edit</i>
-            </a>
             <form method='post' action={`/files/${file.id}/approve`}>
               <button class='button is-success' disabled={!hasMatch} type='submit'>
                 <i class='material-symbols-outlined'>check</i>

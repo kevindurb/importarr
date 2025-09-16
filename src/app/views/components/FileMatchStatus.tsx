@@ -12,7 +12,11 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     const movie = await prisma.movie.findUniqueOrThrow({
       where: { id: file.movieId },
     });
-    return <b>{movie.title}</b>;
+    return (
+      <>
+        <b>{movie.title}</b>;<a href={`/files/${file.id}/match`}>Change Match</a>;
+      </>
+    );
   }
   if (file.tvEpisodeId) {
     const tvEpisode = await prisma.tVEpisode.findUniqueOrThrow({
@@ -23,10 +27,11 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     });
     return (
       <b>
-        {tvEpisode.series.name} {tvEpisode.episodeName} S{tvEpisode.seasonNumber} E
-        {tvEpisode.episodeNumber}
+        {tvEpisode.series.name} {tvEpisode.episodeName}
+        <span class='tag is-info'>S{tvEpisode.seasonNumber}</span>
+        <span class='tag is-info'>E{tvEpisode.episodeNumber}</span>
       </b>
     );
   }
-  return <i class='bi bi-ban'></i>;
+  return <a href={`/files/${file.id}/match`}>Create Match</a>;
 };

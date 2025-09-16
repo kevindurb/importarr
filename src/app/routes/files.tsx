@@ -4,8 +4,8 @@ import z from 'zod';
 import { PrismaClient } from '../../../prisma/generated/prisma';
 import { refreshUnmatchedFiles } from '../../domain/autoMatcher';
 import { refreshFiles } from '../../domain/sourceFileImporter';
-import { FileMatchEditor } from '../views/pages/FileMatchEditor';
 import { FilesListPage } from '../views/pages/FilesListPage';
+import { MatchWizardPage } from '../views/pages/MatchWizardPage/MatchWizardPage';
 
 const prisma = new PrismaClient();
 export const filesRouter = new Hono();
@@ -26,9 +26,19 @@ filesRouter.post('/:fileId/approve', async (c) => {
   return c.redirect('/files');
 });
 
-filesRouter.get('/:fileId/match', async (c) =>
-  c.html(<FileMatchEditor fileId={c.req.param('fileId')} query={c.req.query('query')} />),
-);
+filesRouter.get('/:fileId/match', async (c) => {
+  const isTv = c.req.query('isTv');
+  return c.html(
+    <MatchWizardPage
+      fileId={c.req.param('fileId')}
+      isTv={isTv === '1' ? true : isTv === '0' ? false : undefined}
+      search={c.req.query('search')}
+      tmdbId={Number.parseInt(c.req.query('tmdbId') ?? '0')}
+      seasonNumber={Number.parseInt(c.req.query('seasonNumber') ?? '0')}
+      episodeNumber={Number.parseInt(c.req.query('episodeNumber') ?? '0')}
+    />,
+  );
+});
 
 filesRouter.post(
   '/:fileId/match',
@@ -38,8 +48,8 @@ filesRouter.post(
       z.object({
         tmdbId: z.string().transform((id) => Number.parseInt(id)),
         isTV: z.literal('1').transform(() => true as const),
-        season: z.number(),
-        episode: z.number(),
+        seasonNumber: z.string().transform((id) => Number.parseInt(id)),
+        episodeNumber: z.string().transform((id) => Number.parseInt(id)),
       }),
       z.object({
         tmdbId: z.string().transform((id) => Number.parseInt(id)),
