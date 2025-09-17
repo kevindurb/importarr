@@ -47,7 +47,8 @@
         "useForOf": "error",
         "useFragmentSyntax": "error",
         "useSingleVarDeclarator": "error",
-        "useTemplate": "error"
+        "useTemplate": "error",
+        "noNonNullAssertion": "off"
       },
       "complexity": {
         "noExtraBooleanCast": "error",
