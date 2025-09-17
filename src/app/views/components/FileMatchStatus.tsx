@@ -14,7 +14,8 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     });
     return (
       <>
-        <b>{movie.title}</b>;<a href={`/files/${file.id}/match`}>Change Match</a>;
+        <b>{movie.title}</b>
+        <a href={`/files/${file.id}/match`}>Change Match</a>;
       </>
     );
   }
