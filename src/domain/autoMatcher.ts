@@ -1,5 +1,5 @@
 import { PrismaClient, type SourceFile } from '@/../prisma/generated/prisma';
-import { searchMovies, searchTv } from '@/infrastructure/tmdb/tmdbService';
+import { DefaultService as Tmdb } from '@/generated/tmdb';
 import {
   createMatchForSourceFileToMovie,
   createMatchForSourceFileToTVEpisode,
@@ -9,8 +9,8 @@ import { getMetadataForSourceFile, isTv, type ParsedMovie, type ParsedShow } fro
 const prisma = new PrismaClient();
 
 const autoMatchTv = async (metadata: ParsedShow, sourceFile: SourceFile) => {
-  const { results } = await searchTv(metadata.title);
-  const match = results.at(0);
+  const { results } = await Tmdb.searchTv({ query: metadata.title });
+  const match = results?.at(0);
   if (!match) return;
   const seasonNumber = metadata.seasons.at(0) ?? 1;
   const episodeNumber = metadata.episodeNumbers.at(0) ?? 1;
@@ -18,8 +18,8 @@ const autoMatchTv = async (metadata: ParsedShow, sourceFile: SourceFile) => {
 };
 
 const autoMatchMovie = async (metadata: ParsedMovie, sourceFile: SourceFile) => {
-  const { results } = await searchMovies(metadata.title);
-  const match = results.at(0);
+  const { results } = await Tmdb.searchMovie({ query: metadata.title });
+  const match = results?.at(0);
   if (!match) return;
   await createMatchForSourceFileToMovie(sourceFile, match);
 };

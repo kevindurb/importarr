@@ -4,6 +4,7 @@ import { Layout } from '@/app/views/layouts/Layout';
 import { getRelativePath } from '@/util/file';
 import { ChooseEpisodeStep } from './ChooseEpisodeStep';
 import { ChooseMediaTypeStep } from './ChooseMediaTypeStep';
+import { ConfirmStep } from './ConfirmStep';
 import { SearchTmdbStep } from './SearchTmdbStep';
 
 type Props = {
@@ -29,12 +30,27 @@ export const MatchWizardPage: FC<Props> = async ({
     where: { id: fileId },
   });
   const renderStep = () => {
-    if (isTv === undefined) {
-      return <ChooseMediaTypeStep />;
-    } else if (!tmdbId) {
-      return <SearchTmdbStep isTv={isTv} search={search} />;
-    } else if (isTv && !(seasonNumber && episodeNumber)) {
+    const atBeginning = isTv === undefined;
+    const needsTmdbId = !tmdbId;
+    const needsEpisodeChoice = isTv && !(seasonNumber && episodeNumber);
+    const isReady = isTv ? tmdbId && episodeNumber && seasonNumber : tmdbId;
+
+    if (atBeginning) {
+      return <ChooseMediaTypeStep fileId={fileId} />;
+    } else if (needsTmdbId) {
+      return <SearchTmdbStep fileId={fileId} isTv={isTv} search={search} />;
+    } else if (needsEpisodeChoice) {
       return <ChooseEpisodeStep tmdbId={tmdbId} />;
+    } else if (isReady) {
+      return (
+        <ConfirmStep
+          fileId={fileId}
+          isTv={isTv}
+          tmdbId={tmdbId}
+          episodeNumber={episodeNumber}
+          seasonNumber={seasonNumber}
+        />
+      );
     }
   };
 

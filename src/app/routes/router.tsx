@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { IndexPage } from '../views/pages/IndexPage';
+import { IndexPage } from '@/app/views/pages/IndexPage';
 import { filesRouter } from './files';
 import { importRouter } from './import';
 

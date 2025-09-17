@@ -1,12 +1,12 @@
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
-import { PrismaClient } from '../../../prisma/generated/prisma';
-import { refreshUnmatchedFiles } from '../../domain/autoMatcher';
-import { refreshFiles } from '../../domain/sourceFileImporter';
-import { CreateMatchBody } from '../validators/CreateMatchBody';
-import { MatchPageState } from '../validators/matchPageState';
-import { FilesListPage } from '../views/pages/FilesListPage';
-import { MatchWizardPage } from '../views/pages/MatchWizardPage/MatchWizardPage';
+import { PrismaClient } from '@/../prisma/generated/prisma';
+import { CreateMatchBody } from '@/app/validators/CreateMatchBody';
+import { MatchPageState } from '@/app/validators/MatchPageState';
+import { FilesListPage } from '@/app/views/pages/FilesListPage';
+import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
+import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
+import { refreshFiles } from '@/domain/sourceFileImporter';
 
 const prisma = new PrismaClient();
 export const filesRouter = new Hono();
@@ -27,8 +27,8 @@ filesRouter.post('/:fileId/approve', async (c) => {
   return c.redirect('/files');
 });
 
-filesRouter.get('/:fileId/match', zValidator('param', MatchPageState), async (c) => {
-  const { isTv, search, tmdbId, seasonNumber, episodeNumber } = c.req.valid('param');
+filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c) => {
+  const { isTv, search, tmdbId, seasonNumber, episodeNumber } = c.req.valid('query');
 
   return c.html(
     <MatchWizardPage
@@ -48,9 +48,10 @@ filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c
   const file = await prisma.sourceFile.findUniqueOrThrow({
     where: { id: fileId },
   });
-  if (data.isTV) {
+  if (data.isTv) {
     console.log('match tv', file);
   } else {
     console.log('match movie', file);
   }
+  return c.redirect('/files');
 });

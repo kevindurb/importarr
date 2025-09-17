@@ -2,7 +2,7 @@ import type { FC } from 'hono/jsx';
 import { MatchPageState } from '@/app/validators/MatchPageState';
 
 type Props = {
-  fileId: number;
+  fileId: string;
 };
 
 export const ChooseMediaTypeStep: FC<Props> = ({ fileId }) => {

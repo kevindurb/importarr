@@ -1,8 +1,12 @@
 import { PrismaClient, type SourceFile, type TVSeries } from '@/../prisma/generated/prisma';
-import { getTvDetails, getTvSeasonDetails } from '@/infrastructure/tmdb/tmdbService';
-import type { TmdbMovieListItem, TmdbTvListItem } from '@/infrastructure/tmdb/types';
+import { DefaultService as Tmdb } from '@/generated/tmdb';
 
 const prisma = new PrismaClient();
+
+type TmdbMovieListItem = NonNullable<
+  Awaited<ReturnType<typeof Tmdb.searchMovie>>['results']
+>[number];
+type TmdbTvListItem = NonNullable<Awaited<ReturnType<typeof Tmdb.searchTv>>['results']>[number];
 
 export const createMatchForSourceFileToMovie = async (
   sourceFile: SourceFile,
@@ -20,9 +24,9 @@ export const createMatchForSourceFileToMovie = async (
   } else {
     const movie = await prisma.movie.create({
       data: {
-        tmdbId: tmdbMovie.id,
-        title: tmdbMovie.title,
-        releaseDate: new Date(tmdbMovie.release_date),
+        tmdbId: tmdbMovie.id!,
+        title: tmdbMovie.title!,
+        releaseDate: new Date(tmdbMovie.release_date!),
       },
     });
 
@@ -34,18 +38,23 @@ export const createMatchForSourceFileToMovie = async (
 };
 
 const upsertAllEpisodesForSeries = async (tmdbId: number, tvSeries: TVSeries) => {
-  const tvDetails = await getTvDetails(tmdbId);
+  const tvDetails = await Tmdb.tvSeriesDetails({ seriesId: tmdbId });
   const seasons = await Promise.all(
-    tvDetails.seasons.map((season) => getTvSeasonDetails(tmdbId, season.season_number)),
+    tvDetails?.seasons?.map((season) =>
+      Tmdb.tvSeasonDetails({
+        seriesId: tmdbId,
+        seasonNumber: season.season_number!,
+      }),
+    ) ?? [],
   );
 
   const allEpisodes = seasons.flatMap(({ episodes }) => episodes);
 
   await prisma.tVEpisode.createMany({
     data: allEpisodes.map((episode) => ({
-      episodeName: episode.name,
-      seasonNumber: episode.season_number,
-      episodeNumber: episode.episode_number,
+      episodeName: episode?.name!,
+      seasonNumber: episode?.season_number!,
+      episodeNumber: episode?.episode_number!,
       tvSeriesId: tvSeries.id,
     })),
   });
@@ -63,9 +72,9 @@ export const createMatchForSourceFileToTVEpisode = async (
     },
     update: {},
     create: {
-      tmdbId: tmdbTv.id,
-      name: tmdbTv.name,
-      seriesReleaseDate: new Date(tmdbTv.first_air_date),
+      tmdbId: tmdbTv.id!,
+      name: tmdbTv.name!,
+      seriesReleaseDate: new Date(tmdbTv.first_air_date!),
     },
   });
 
@@ -78,7 +87,7 @@ export const createMatchForSourceFileToTVEpisode = async (
   });
 
   if (!episode) {
-    await upsertAllEpisodesForSeries(tmdbTv.id, series);
+    await upsertAllEpisodesForSeries(tmdbTv.id!, series);
     episode = await prisma.tVEpisode.findFirstOrThrow({
       where: {
         seasonNumber,

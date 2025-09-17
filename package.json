@@ -4,13 +4,15 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run --watch --hot ./src/app"
+    "dev": "bun run --watch --hot ./src/app",
+    "generate:tmdb": "openapi --input 'https://developer.themoviedb.org/openapi/64542913e1f86100738e227f' --output './src/generated/tmdb' --useOptions"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.3",
     "@types/bun": "latest",
     "@types/byte-size": "^8.1.2",
     "lefthook": "^1.12.4",
+    "openapi-typescript-codegen": "^0.29.0",
     "prisma": "^6.15.0"
   },
   "peerDependencies": {

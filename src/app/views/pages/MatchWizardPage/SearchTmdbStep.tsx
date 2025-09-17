@@ -1,22 +1,53 @@
 import type { FC } from 'hono/jsx';
-import { MatchPageState } from '@/app/validators/matchPageState';
-import { searchMovies, searchTv } from '@/infrastructure/tmdb/tmdbService';
-import { isTvSeries } from '@/infrastructure/tmdb/types';
+import { MatchPageState } from '@/app/validators/MatchPageState';
+import { DefaultService as Tmdb } from '@/generated/tmdb';
+import { isTvSeries } from '@/util/tmdb';
 
 type Props = {
-  fileId: number;
+  fileId: string;
   isTv: boolean;
   search?: string;
 };
 
 export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
-  const results = search ? (isTv ? await searchTv(search) : await searchMovies(search)) : undefined;
+  const results = search
+    ? isTv
+      ? await Tmdb.searchTv({ query: search })
+      : await Tmdb.searchMovie({ query: search })
+    : undefined;
 
-  const searchResultItems = results?.results.map((item) => {
+  const searchResultItems = results?.results?.map((item) => {
     if (isTvSeries(item)) {
-      return <div>{item.name}</div>;
+      return (
+        <tr>
+          <td>{item.id}</td>
+          <td>{item.name}</td>
+          <td>{item.first_air_date}</td>
+          <td>
+            <button type='submit' name='tmdbId' value={MatchPageState.shape.tmdbId.encode(item.id)}>
+              Choose
+            </button>
+          </td>
+        </tr>
+      );
     }
-    return <div>{item.title}</div>;
+    return (
+      <tr>
+        <td>{item.id}</td>
+        <td>{item.title}</td>
+        <td>{item.release_date}</td>
+        <td>
+          <button
+            class='button is-secondary'
+            type='submit'
+            name='tmdbId'
+            value={MatchPageState.shape.tmdbId.encode(item.id)}
+          >
+            Choose
+          </button>
+        </td>
+      </tr>
+    );
   });
 
   return (
@@ -40,7 +71,20 @@ export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
           </div>
         </div>
       </form>
-      {searchResultItems}
+      <form method='get' action={`/files/${fileId}/match`}>
+        <input type='hidden' name='isTv' value={MatchPageState.shape.isTv.encode(isTv)} />
+        <table class='table is-fullwidth'>
+          <thead>
+            <tr>
+              <td>id</td>
+              <td>Name</td>
+              <td>Release Date</td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>{searchResultItems}</tbody>
+        </table>
+      </form>
     </>
   );
 };
