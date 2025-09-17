@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient, type SourceFile } from '../../../../prisma/generated/prisma';
+import { PrismaClient, type SourceFile } from '@/../prisma/generated/prisma';
 
 type Props = {
   file: SourceFile;

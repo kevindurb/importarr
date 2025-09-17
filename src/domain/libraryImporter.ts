@@ -4,8 +4,8 @@ import {
   PrismaClient,
   type SourceFile,
   type TVEpisode,
-} from '../../prisma/generated/prisma';
-import { getLibraryMoviesPath, getLibraryTVShowsPath } from '../util/env';
+} from '@/../prisma/generated/prisma';
+import { getLibraryMoviesPath, getLibraryTVShowsPath } from '@/util/env';
 
 const prisma = new PrismaClient();
 

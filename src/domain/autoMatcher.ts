@@ -1,5 +1,5 @@
-import { PrismaClient, type SourceFile } from '../../prisma/generated/prisma';
-import { searchMovies, searchTv } from '../infrastructure/tmdb/tmdbService';
+import { PrismaClient, type SourceFile } from '@/../prisma/generated/prisma';
+import { searchMovies, searchTv } from '@/infrastructure/tmdb/tmdbService';
 import {
   createMatchForSourceFileToMovie,
   createMatchForSourceFileToTVEpisode,

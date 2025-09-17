@@ -1,6 +1,6 @@
-import { PrismaClient } from '../../prisma/generated/prisma';
-import { type File, getAllFilesInDir } from '../infrastructure/filesService';
-import { getSourcePath } from '../util/env';
+import { PrismaClient } from '@/../prisma/generated/prisma';
+import { type File, getAllFilesInDir } from '@/infrastructure/filesService';
+import { getSourcePath } from '@/util/env';
 
 const prisma = new PrismaClient();
 

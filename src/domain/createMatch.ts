@@ -1,6 +1,6 @@
-import { PrismaClient, type SourceFile, type TVSeries } from '../../prisma/generated/prisma';
-import { getTvDetails, getTvSeasonDetails } from '../infrastructure/tmdb/tmdbService';
-import type { TmdbMovieListItem, TmdbTvListItem } from '../infrastructure/tmdb/types';
+import { PrismaClient, type SourceFile, type TVSeries } from '@/../prisma/generated/prisma';
+import { getTvDetails, getTvSeasonDetails } from '@/infrastructure/tmdb/tmdbService';
+import type { TmdbMovieListItem, TmdbTvListItem } from '@/infrastructure/tmdb/types';
 
 const prisma = new PrismaClient();
 

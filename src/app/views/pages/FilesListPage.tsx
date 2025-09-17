@@ -1,9 +1,9 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
-import { PrismaClient } from '../../../../prisma/generated/prisma';
-import { getRelativePath } from '../../../util/file';
-import { FileMatchStatus } from '../components/FileMatchStatus';
-import { Layout } from '../layouts/Layout';
+import { PrismaClient } from '@/../prisma/generated/prisma';
+import { FileMatchStatus } from '@/app/views/components/FileMatchStatus';
+import { Layout } from '@/app/views/layouts/Layout';
+import { getRelativePath } from '@/util/file';
 
 const prisma = new PrismaClient();
 

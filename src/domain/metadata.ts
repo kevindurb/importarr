@@ -5,8 +5,8 @@ import {
   type ParsedMovie,
   type ParsedShow,
 } from '@ctrl/video-filename-parser';
-import type { SourceFile } from '../../prisma/generated/prisma';
-import { getRelativePath } from '../util/file';
+import type { SourceFile } from '@/../prisma/generated/prisma';
+import { getRelativePath } from '@/util/file';
 
 export type { ParsedFilename, ParsedShow, ParsedMovie };
 

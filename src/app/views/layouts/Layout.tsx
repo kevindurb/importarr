@@ -1,6 +1,6 @@
 import { html } from 'hono/html';
 import type { FC } from 'hono/jsx';
-import { Nav } from '../components/Nav';
+import { Nav } from '@/app/views/components/Nav';
 
 export const Layout: FC = ({ children }) => html`
   <!doctype html>

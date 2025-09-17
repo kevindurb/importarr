@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import type { BodyInit } from 'bun';
-import { getTmdbApiKey } from '../../util/env';
+import { getTmdbApiKey } from '@/util/env';
 
 type SearchParams = Dict<
   string | number | bigint | boolean | readonly (string | number | bigint | boolean)[] | null

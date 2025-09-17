@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient } from '../../../../../prisma/generated/prisma';
-import { getRelativePath } from '../../../../util/file';
-import { Layout } from '../../layouts/Layout';
+import { PrismaClient } from '@/../prisma/generated/prisma';
+import { Layout } from '@/app/views/layouts/Layout';
+import { getRelativePath } from '@/util/file';
 import { ChooseEpisodeStep } from './ChooseEpisodeStep';
 import { ChooseMediaTypeStep } from './ChooseMediaTypeStep';
 import { SearchTmdbStep } from './SearchTmdbStep';
@@ -41,10 +41,7 @@ export const MatchWizardPage: FC<Props> = async ({
   return (
     <Layout>
       <h1 class='title'>{getRelativePath(file)}</h1>
-      <form method='get' action={`/files/${fileId}/match`}>
-        {isTv !== undefined ? <input type='hidden' name='isTv' value={isTv ? '1' : '0'} /> : null}
-        {renderStep()}
-      </form>
+      {renderStep()}
     </Layout>
   );
 };

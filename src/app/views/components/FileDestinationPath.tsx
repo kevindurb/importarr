@@ -1,6 +1,6 @@
 import type { FC } from 'hono/jsx';
-import type { SourceFile } from '../../../../prisma/generated/prisma';
-import { buildDestinationPathForFile } from '../../../domain/libraryImporter';
+import type { SourceFile } from '@/../prisma/generated/prisma';
+import { buildDestinationPathForFile } from '@/domain/libraryImporter';
 
 type Props = {
   file: SourceFile;

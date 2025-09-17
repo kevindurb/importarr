@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx';
-import { Layout } from '../layouts/Layout';
+import { Layout } from '@/app/views/layouts/Layout';
 
 export const IndexPage: FC = () => (
   <Layout>
