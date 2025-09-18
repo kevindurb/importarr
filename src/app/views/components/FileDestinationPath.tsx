@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx';
-import { buildDestinationPathForFile } from '@/domain/libraryImporter';
+import { buildDestinationPathForFile } from '@/domain/destinationPath';
 import type { SourceFile } from '@/generated/prisma';
 
 type Props = {

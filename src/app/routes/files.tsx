@@ -5,13 +5,9 @@ import { MatchPageState } from '@/app/validators/MatchPageState';
 import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
 import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
-import {
-  createMatchForSourceFileToMovie,
-  createMatchForSourceFileToTVEpisode,
-} from '@/domain/createMatch';
+import { createMatchForSourceFile } from '@/domain/createMatch';
 import { refreshFiles } from '@/domain/sourceFileImporter';
 import { prisma } from '@/infrastructure/prisma';
-import { tmdb } from '@/infrastructure/tmdb';
 import { Layout } from '../views/layouts/Layout';
 
 export const filesRouter = new Hono();
@@ -57,22 +53,10 @@ filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c)
 
 filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c) => {
   const fileId = c.req.param('fileId');
-  const data = c.req.valid('form');
+  const { tmdbId, isTv, seasonEpisode } = c.req.valid('form');
   const file = await prisma.sourceFile.findUniqueOrThrow({
     where: { id: fileId },
   });
-  if (data.isTv) {
-    if (!data.seasonEpisode) throw new Error('TV match requires season and episode');
-    const tvSeries = await tmdb.tvSeriesDetails({ seriesId: data.tmdbId });
-    await createMatchForSourceFileToTVEpisode(
-      file,
-      tvSeries,
-      data.seasonEpisode.season,
-      data.seasonEpisode.episode,
-    );
-  } else {
-    const movie = await tmdb.movieDetails({ movieId: data.tmdbId });
-    await createMatchForSourceFileToMovie(file, movie);
-  }
+  await createMatchForSourceFile(file, tmdbId, isTv, seasonEpisode?.season, seasonEpisode?.episode);
   return c.redirect('/files');
 });

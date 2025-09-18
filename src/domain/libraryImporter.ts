@@ -1,44 +1,20 @@
+import fs from 'node:fs/promises';
 import path from 'node:path';
-import type { Movie, SourceFile, TVEpisode } from '@/generated/prisma';
+import type { SourceFile } from '@/generated/prisma';
 import { prisma } from '@/infrastructure/prisma';
-import { getLibraryMoviesPath, getLibraryTVShowsPath } from '@/util/env';
+import { buildDestinationPathForFile } from './destinationPath';
 
-const buildDestinationPathForMovie = (file: SourceFile, movie: Movie) => {
-  const releaseDate = new Date(movie.releaseDate);
-
-  const mediaName = `${movie.title} (${releaseDate.getFullYear()}) [tmdb=${movie.tmdbId}]`;
-
-  return path.join(getLibraryMoviesPath(), mediaName, `${mediaName}${path.extname(file.filePath)}`);
-};
-
-const buildDestinationPathForTvEpisode = async (file: SourceFile, tvEpisode: TVEpisode) => {
-  const tvSeries = await prisma.tVSeries.findUniqueOrThrow({
-    where: { id: tvEpisode.tvSeriesId },
+export const importFileToLibrary = async (file: SourceFile) => {
+  const destinationPath = await buildDestinationPathForFile(file);
+  console.log('Moving file', {
+    src: file.filePath,
+    dest: destinationPath,
   });
-  const releaseDate = new Date(tvSeries.seriesReleaseDate);
+  const createdPath = await fs.mkdir(path.dirname(destinationPath), { recursive: true });
+  console.log('Created path', createdPath);
 
-  return path.join(
-    getLibraryTVShowsPath(),
-    `${tvSeries.name} (${releaseDate.getFullYear()}) [tmdb=${tvSeries.tmdbId}]`,
-    `Season ${tvEpisode.seasonNumber}`,
-    `${tvSeries.name} (${releaseDate.getFullYear()}) S${tvEpisode.seasonNumber}E${tvEpisode.episodeNumber} ${tvEpisode.episodeName} [tmdb=${tvSeries.tmdbId}]${path.extname(file.filePath)}`,
-  );
-};
+  await fs.rename(file.filePath, destinationPath);
+  console.log('Done moving file');
 
-export const buildDestinationPathForFile = async (
-  file: SourceFile,
-): Promise<string | undefined> => {
-  if (file.movieId) {
-    const movie = await prisma.movie.findUniqueOrThrow({
-      where: { id: file.movieId },
-    });
-    return buildDestinationPathForMovie(file, movie);
-  }
-
-  if (file.tvEpisodeId) {
-    const tvEpisode = await prisma.tVEpisode.findUniqueOrThrow({
-      where: { id: file.tvEpisodeId },
-    });
-    return await buildDestinationPathForTvEpisode(file, tvEpisode);
-  }
+  await prisma.sourceFile.update({ where: { id: file.id }, data: { status: 'Completed' } });
 };

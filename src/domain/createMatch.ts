@@ -101,3 +101,20 @@ export const createMatchForSourceFileToTVEpisode = async (
     data: { tvEpisodeId: episode.id, status: 'NeedsConfirmation' },
   });
 };
+
+export const createMatchForSourceFile = async (
+  file: SourceFile,
+  tmdbId: number,
+  isTv: boolean,
+  season?: number,
+  episode?: number,
+) => {
+  if (isTv) {
+    if (!(season && episode)) throw new Error('TV match requires season and episode');
+    const tvSeries = await tmdb.tvSeriesDetails({ seriesId: tmdbId });
+    await createMatchForSourceFileToTVEpisode(file, tvSeries, season, episode);
+  } else {
+    const movie = await tmdb.movieDetails({ movieId: tmdbId });
+    await createMatchForSourceFileToMovie(file, movie);
+  }
+};
