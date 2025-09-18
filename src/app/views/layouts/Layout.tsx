@@ -1,3 +1,4 @@
+import clx from 'classnames';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
 import type { FC, PropsWithChildren } from 'hono/jsx';
@@ -30,22 +31,30 @@ export const Layout: FC<Props> = ({ children, c }) => {
             rel='stylesheet'
             href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'
           />
+          <link rel='stylesheet' href='/css/main.css' />
         </head>
         <body class='has-navbar-fixed-top'>
           <Nav req={c.req} />
           <main class='container my-4'>{children}</main>
           <div
-            class='is-flex is-flex-direction-column'
-            style={{ position: 'fixed', bottom: '16px', right: '16px' }}
+            class={clx(
+              'p-2',
+              'z-40',
+              'is-flex',
+              'is-flex-direction-column',
+              'is-fixed',
+              'is-top-right',
+            )}
           >
             {successNotifications.map((msg) => (
               <div
-                class='notification is-success'
-                style={{
-                  animation: 'fadeOutRight forwards',
-                  'animation-duration': '1s',
-                  'animation-delay': '5s',
-                }}
+                class={clx(
+                  'notification',
+                  'is-success',
+                  'animate__animated',
+                  'animate__fadeOutRight',
+                  'animate__delay-5s',
+                )}
               >
                 {msg}
               </div>
