@@ -1,4 +1,4 @@
-import type { Context, HonoRequest } from 'hono';
+import type { Context } from 'hono';
 import { html } from 'hono/html';
 import type { FC, PropsWithChildren } from 'hono/jsx';
 import { Nav } from '@/app/views/components/Nav';
