@@ -2,16 +2,20 @@ import clx from 'classnames';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
 import type { FC, PropsWithChildren } from 'hono/jsx';
+import type { AppEnv } from '@/app/types';
 import { Nav } from '@/app/views/components/Nav';
 import { IconStylesheetLink } from '../elements/Icon';
+import { Notification } from '../elements/Notification';
 
 type Props = PropsWithChildren & {
-  c: Context;
+  c: Context<AppEnv>;
 };
 
 export const Layout: FC<Props> = ({ children, c }) => {
-  const notifications = c.flash.get();
-  const successNotifications = notifications.SUCCESS ?? [];
+  const successNotification = c.get('session').get('success');
+  const infoNotification = c.get('session').get('success');
+  const warningNotification = c.get('session').get('warning');
+  const errorNotification = c.get('session').get('error');
 
   return html`
     <!doctype html>
@@ -46,19 +50,14 @@ export const Layout: FC<Props> = ({ children, c }) => {
               'is-top-right',
             )}
           >
-            {successNotifications.map((msg) => (
-              <div
-                class={clx(
-                  'notification',
-                  'is-success',
-                  'animate__animated',
-                  'animate__fadeOutRight',
-                  'animate__delay-5s',
-                )}
-              >
-                {msg}
-              </div>
-            ))}
+            {successNotification && (
+              <Notification type='success'>{successNotification}</Notification>
+            )}
+            {infoNotification && <Notification type='info'>{infoNotification}</Notification>}
+            {warningNotification && (
+              <Notification type='warning'>{warningNotification}</Notification>
+            )}
+            {errorNotification && <Notification type='error'>{errorNotification}</Notification>}
           </div>
         </body>
       </html>

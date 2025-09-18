@@ -21,3 +21,9 @@ export const getLibraryTVShowsPath = () => {
   if (!libraryTvShowsPath) throw new Error('LIBRARY_TV_SHOWS_PATH env var missing');
   return libraryTvShowsPath;
 };
+
+export const getAppSecret = () => {
+  const secret = process.env.APP_SECRET;
+  if (!secret) throw new Error('APP_SECRET env var missing');
+  return secret;
+};

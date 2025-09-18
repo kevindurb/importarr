@@ -30,6 +30,7 @@
     "byte-size": "^9.0.1",
     "classnames": "^2.5.1",
     "hono": "^4.9.6",
+    "hono-sessions": "^0.8.0",
     "zod": "^4.1.8"
   }
 }

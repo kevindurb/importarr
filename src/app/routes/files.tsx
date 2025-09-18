@@ -8,9 +8,10 @@ import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
 import { createMatchForSourceFile } from '@/domain/createMatch';
 import { refreshFiles } from '@/domain/sourceFileImporter';
 import { prisma } from '@/infrastructure/prisma';
+import type { AppEnv } from '../types';
 import { Layout } from '../views/layouts/Layout';
 
-export const filesRouter = new Hono();
+export const filesRouter = new Hono<AppEnv>();
 
 filesRouter.get('/', (c) =>
   c.html(
@@ -23,7 +24,7 @@ filesRouter.get('/', (c) =>
 filesRouter.get('/refresh', async (c) => {
   await refreshFiles();
   await refreshUnmatchedFiles();
-  c.flash.set('INFO', 'Files Refreshed');
+  c.get('session').flash('info', 'Files Refreshed');
   return c.redirect('/files');
 });
 
@@ -33,7 +34,7 @@ filesRouter.post('/:fileId/approve', async (c) => {
     where: { id },
     data: { status: 'ReadyToMove' },
   });
-  c.flash.set('SUCCESS', 'File Approved');
+  c.get('session').flash('success', 'File Approved');
   return c.redirect('/files');
 });
 
@@ -60,6 +61,6 @@ filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c
     where: { id: fileId },
   });
   await createMatchForSourceFile(file, tmdbId, isTv, seasonEpisode?.season, seasonEpisode?.episode);
-  c.flash.set('SUCCESS', 'File Matched');
+  c.get('session').flash('success', 'File Matched');
   return c.redirect('/files');
 });
