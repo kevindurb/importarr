@@ -14,7 +14,7 @@ export const filesRouter = new Hono();
 
 filesRouter.get('/', (c) =>
   c.html(
-    <Layout req={c.req}>
+    <Layout c={c}>
       <FilesListPage />
     </Layout>,
   ),
@@ -23,6 +23,7 @@ filesRouter.get('/', (c) =>
 filesRouter.get('/refresh', async (c) => {
   await refreshFiles();
   await refreshUnmatchedFiles();
+  c.flash.set('INFO', 'Files Refreshed');
   return c.redirect('/files');
 });
 
@@ -32,6 +33,7 @@ filesRouter.post('/:fileId/approve', async (c) => {
     where: { id },
     data: { status: 'ReadyToMove' },
   });
+  c.flash.set('SUCCESS', 'File Approved');
   return c.redirect('/files');
 });
 
@@ -39,7 +41,7 @@ filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c)
   const { isTv, search, tmdbId, seasonEpisode } = c.req.valid('query');
 
   return c.html(
-    <Layout req={c.req}>
+    <Layout c={c}>
       <MatchWizardPage
         fileId={c.req.param('fileId')}
         isTv={isTv}
@@ -58,5 +60,6 @@ filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c
     where: { id: fileId },
   });
   await createMatchForSourceFile(file, tmdbId, isTv, seasonEpisode?.season, seasonEpisode?.episode);
+  c.flash.set('SUCCESS', 'File Matched');
   return c.redirect('/files');
 });
