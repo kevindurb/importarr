@@ -1,6 +1,5 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
-import { FileMatchStatus } from '@/app/views/components/FileMatchStatus';
 import { Layout } from '@/app/views/layouts/Layout';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
@@ -9,6 +8,14 @@ export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({
     where: { status: { notIn: ['Completed', 'ReadyToMove', 'Error'] } },
     orderBy: { filePath: 'asc' },
+    include: {
+      movie: true,
+      tvEpisode: {
+        include: {
+          series: true,
+        },
+      },
+    },
   });
 
   const filesList = files.map((file) => {
@@ -28,7 +35,18 @@ export const FilesListPage: FC = async () => {
           )}
         </td>
         <td>
-          <FileMatchStatus file={file} />
+          {file.movie ? (
+            file.movie.title
+          ) : file.tvEpisode?.series ? (
+            <>
+              {file.tvEpisode.series.name} {file.tvEpisode.episodeName}
+              <span class='tag is-dark mx-1'>
+                S{file.tvEpisode.seasonNumber}E{file.tvEpisode.episodeNumber}
+              </span>
+            </>
+          ) : (
+            'No Match Found'
+          )}
         </td>
         <td>
           <div class='buttons is-flex-wrap-nowrap'>
