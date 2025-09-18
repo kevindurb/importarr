@@ -1,15 +1,26 @@
 import z from 'zod';
 import { stringToInt } from '../../util/zod';
 
-export const CreateMatchBody = z.union([
+export const SeasonEpisode = z.codec(
+  z.string(),
   z.object({
-    tmdbId: stringToInt,
-    isTv: z.stringbool(),
-    seasonNumber: stringToInt,
-    episodeNumber: stringToInt,
+    season: z.number(),
+    episode: z.number(),
   }),
-  z.object({
-    tmdbId: stringToInt,
-    isTv: z.stringbool(),
-  }),
-]);
+  {
+    encode: ({ season, episode }) => `${season}|${episode}`,
+    decode: (value) => {
+      const [season, episode] = value.split('|');
+      return {
+        season: Number.parseInt(season ?? '0'),
+        episode: Number.parseInt(episode ?? '0'),
+      };
+    },
+  },
+);
+
+export const CreateMatchBody = z.object({
+  tmdbId: stringToInt,
+  isTv: z.stringbool(),
+  seasonEpisode: SeasonEpisode.optional(),
+});

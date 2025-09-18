@@ -1,12 +1,12 @@
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
-import { PrismaClient } from '@/../prisma/generated/prisma';
 import { CreateMatchBody } from '@/app/validators/CreateMatchBody';
 import { MatchPageState } from '@/app/validators/MatchPageState';
 import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
 import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
 import { refreshFiles } from '@/domain/sourceFileImporter';
+import { PrismaClient } from '@/generated/prisma';
 
 const prisma = new PrismaClient();
 export const filesRouter = new Hono();
@@ -28,7 +28,7 @@ filesRouter.post('/:fileId/approve', async (c) => {
 });
 
 filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c) => {
-  const { isTv, search, tmdbId, seasonNumber, episodeNumber } = c.req.valid('query');
+  const { isTv, search, tmdbId, seasonEpisode } = c.req.valid('query');
 
   return c.html(
     <MatchWizardPage
@@ -36,8 +36,7 @@ filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c)
       isTv={isTv}
       search={search}
       tmdbId={tmdbId}
-      seasonNumber={seasonNumber}
-      episodeNumber={episodeNumber}
+      seasonEpisode={seasonEpisode}
     />,
   );
 });

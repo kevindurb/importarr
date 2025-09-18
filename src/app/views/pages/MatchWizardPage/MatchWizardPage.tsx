@@ -1,6 +1,8 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient } from '@/../prisma/generated/prisma';
+import type z from 'zod';
+import type { SeasonEpisode } from '@/app/validators/CreateMatchBody';
 import { Layout } from '@/app/views/layouts/Layout';
+import { PrismaClient } from '@/generated/prisma';
 import { getRelativePath } from '@/util/file';
 import { ChooseEpisodeStep } from './ChooseEpisodeStep';
 import { ChooseMediaTypeStep } from './ChooseMediaTypeStep';
@@ -12,8 +14,7 @@ type Props = {
   isTv?: boolean;
   search?: string;
   tmdbId?: number;
-  seasonNumber?: number;
-  episodeNumber?: number;
+  seasonEpisode?: z.infer<typeof SeasonEpisode>;
 };
 
 const prisma = new PrismaClient();
@@ -23,8 +24,7 @@ export const MatchWizardPage: FC<Props> = async ({
   isTv,
   search,
   tmdbId,
-  seasonNumber,
-  episodeNumber,
+  seasonEpisode,
 }) => {
   const file = await prisma.sourceFile.findUniqueOrThrow({
     where: { id: fileId },
@@ -32,24 +32,18 @@ export const MatchWizardPage: FC<Props> = async ({
   const renderStep = () => {
     const atBeginning = isTv === undefined;
     const needsTmdbId = !tmdbId;
-    const needsEpisodeChoice = isTv && !(seasonNumber && episodeNumber);
-    const isReady = isTv ? tmdbId && episodeNumber && seasonNumber : tmdbId;
+    const needsEpisodeChoice = isTv && !seasonEpisode;
+    const isReady = isTv ? tmdbId && seasonEpisode : tmdbId;
 
     if (atBeginning) {
       return <ChooseMediaTypeStep fileId={fileId} />;
     } else if (needsTmdbId) {
       return <SearchTmdbStep fileId={fileId} isTv={isTv} search={search} />;
     } else if (needsEpisodeChoice) {
-      return <ChooseEpisodeStep tmdbId={tmdbId} />;
+      return <ChooseEpisodeStep fileId={fileId} tmdbId={tmdbId} />;
     } else if (isReady) {
       return (
-        <ConfirmStep
-          fileId={fileId}
-          isTv={isTv}
-          tmdbId={tmdbId}
-          episodeNumber={episodeNumber}
-          seasonNumber={seasonNumber}
-        />
+        <ConfirmStep fileId={fileId} isTv={isTv} tmdbId={tmdbId} seasonEpisode={seasonEpisode} />
       );
     }
   };

@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import type { SourceFile } from '../../prisma/generated/prisma';
+import type { SourceFile } from '@/generated/prisma';
 import { getSourcePath } from './env';
 
 export const getRelativePath = (sourceFile: SourceFile) => {

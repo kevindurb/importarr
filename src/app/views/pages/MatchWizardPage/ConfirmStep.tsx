@@ -1,7 +1,8 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
-import { PrismaClient } from '@/../prisma/generated/prisma';
-import { MatchPageState } from '@/app/validators/MatchPageState';
+import type z from 'zod';
+import { CreateMatchBody, type SeasonEpisode } from '@/app/validators/CreateMatchBody';
+import { PrismaClient } from '@/generated/prisma';
 import { DefaultService as Tmdb } from '@/generated/tmdb';
 import { getRelativePath } from '@/util/file';
 import { isTvSeries } from '@/util/tmdb';
@@ -10,19 +11,12 @@ type Props = {
   fileId: string;
   isTv: boolean;
   tmdbId: number;
-  episodeNumber?: number;
-  seasonNumber?: number;
+  seasonEpisode?: z.infer<typeof SeasonEpisode>;
 };
 
 const prisma = new PrismaClient();
 
-export const ConfirmStep: FC<Props> = async ({
-  fileId,
-  isTv,
-  tmdbId,
-  episodeNumber,
-  seasonNumber,
-}) => {
+export const ConfirmStep: FC<Props> = async ({ fileId, isTv, tmdbId, seasonEpisode }) => {
   const file = await prisma.sourceFile.findUniqueOrThrow({
     where: { id: fileId },
   });
@@ -30,19 +24,21 @@ export const ConfirmStep: FC<Props> = async ({
     ? await Tmdb.tvSeriesDetails({ seriesId: tmdbId })
     : await Tmdb.movieDetails({ movieId: tmdbId });
 
+  const season = isTv
+    ? await Tmdb.tvSeasonDetails({ seriesId: tmdbId, seasonNumber: seasonEpisode?.season! })
+    : undefined;
+  const episode = season?.episodes?.find(
+    (episode) => episode.episode_number === seasonEpisode?.episode,
+  );
+
   return (
     <form method='post' action={`/files/${fileId}/match`}>
-      <input type='hidden' name='isTv' value={MatchPageState.shape.isTv.encode(isTv)} />
-      <input type='hidden' name='tmdbId' value={MatchPageState.shape.tmdbId.encode(tmdbId)} />
+      <input type='hidden' name='isTv' value={CreateMatchBody.shape.isTv.encode(isTv)} />
+      <input type='hidden' name='tmdbId' value={CreateMatchBody.shape.tmdbId.encode(tmdbId)} />
       <input
         type='hidden'
-        name='episodeNumber'
-        value={MatchPageState.shape.episodeNumber.encode(episodeNumber)}
-      />
-      <input
-        type='hidden'
-        name='seasonNumber'
-        value={MatchPageState.shape.seasonNumber.encode(seasonNumber)}
+        name='seasonEpisode'
+        value={CreateMatchBody.shape.seasonEpisode.encode(seasonEpisode)}
       />
       <h2 class='subtitle'>Are you sure?</h2>
       <div class='columns is-align-items-center'>
@@ -68,12 +64,20 @@ export const ConfirmStep: FC<Props> = async ({
         <div class='column is-fullwidth-mobile'>
           <div class='card'>
             <div class='card-content'>
-              <h2 class='subtitle'>{isTvSeries(item) ? item.name : item.title}</h2>
+              <h2 class='subtitle'>
+                {isTvSeries(item) ? item.name : item.title}
+                {seasonEpisode && ` S${seasonEpisode.season} E${seasonEpisode.episode}`}
+              </h2>
+              {episode && <p class='subtitle is-size-5'>{episode.name}</p>}
               <table class='table'>
                 <tbody>
                   <tr>
                     <th scope='col'>Release Date</th>
-                    <td>{isTvSeries(item) ? item.first_air_date : item.release_date}</td>
+                    <td>
+                      {isTvSeries(item)
+                        ? (episode?.air_date ?? item.first_air_date)
+                        : item.release_date}
+                    </td>
                   </tr>
                   <tr>
                     <th scope='col'>Genres</th>

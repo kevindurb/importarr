@@ -1,10 +1,5 @@
 import path from 'node:path';
-import {
-  type Movie,
-  PrismaClient,
-  type SourceFile,
-  type TVEpisode,
-} from '@/../prisma/generated/prisma';
+import { type Movie, PrismaClient, type SourceFile, type TVEpisode } from '@/generated/prisma';
 import { getLibraryMoviesPath, getLibraryTVShowsPath } from '@/util/env';
 
 const prisma = new PrismaClient();

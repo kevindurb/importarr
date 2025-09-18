@@ -1,4 +1,4 @@
-import { PrismaClient } from '@/../prisma/generated/prisma';
+import { PrismaClient } from '@/generated/prisma';
 import { type File, getAllFilesInDir } from '@/infrastructure/filesService';
 import { getSourcePath } from '@/util/env';
 

@@ -1,4 +1,4 @@
-import { PrismaClient, type SourceFile, type TVSeries } from '@/../prisma/generated/prisma';
+import { PrismaClient, type SourceFile, type TVSeries } from '@/generated/prisma';
 import { DefaultService as Tmdb } from '@/generated/tmdb';
 
 const prisma = new PrismaClient();

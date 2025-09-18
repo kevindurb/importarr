@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient, type SourceFile } from '@/../prisma/generated/prisma';
+import { PrismaClient, type SourceFile } from '@/generated/prisma';
 
 type Props = {
   file: SourceFile;
@@ -27,11 +27,13 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
       },
     });
     return (
-      <b>
-        {tvEpisode.series.name} {tvEpisode.episodeName}
-        <span class='tag is-info'>S{tvEpisode.seasonNumber}</span>
-        <span class='tag is-info'>E{tvEpisode.episodeNumber}</span>
-      </b>
+      <>
+        <a href={`/files/${file.id}/match`}>
+          {tvEpisode.series.name} {tvEpisode.episodeName}
+        </a>
+        <span class='tag is-info mx-1'>S{tvEpisode.seasonNumber}</span>
+        <span class='tag is-info mx-1'>E{tvEpisode.episodeNumber}</span>
+      </>
     );
   }
   return <a href={`/files/${file.id}/match`}>Create Match</a>;

@@ -1,5 +1,7 @@
 import type { FC } from 'hono/jsx';
 import { MatchPageState } from '@/app/validators/MatchPageState';
+import { getMetadataForSourceFile } from '@/domain/metadata';
+import { PrismaClient } from '@/generated/prisma';
 import { DefaultService as Tmdb } from '@/generated/tmdb';
 import { isTvSeries } from '@/util/tmdb';
 
@@ -9,12 +11,30 @@ type Props = {
   search?: string;
 };
 
-export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
+const prisma = new PrismaClient();
+
+export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search: propsSearch }) => {
+  const file = await prisma.sourceFile.findUniqueOrThrow({ where: { id: fileId } });
+  const metadata = getMetadataForSourceFile(file);
+  const defaultSearch = metadata.title;
+
+  const search = propsSearch === undefined ? defaultSearch : propsSearch;
   const results = search
     ? isTv
       ? await Tmdb.searchTv({ query: search })
       : await Tmdb.searchMovie({ query: search })
     : undefined;
+
+  const renderChooseButton = (id?: number) => (
+    <button
+      class='button is-dark'
+      type='submit'
+      name='tmdbId'
+      value={MatchPageState.shape.tmdbId.encode(id)}
+    >
+      Choose
+    </button>
+  );
 
   const searchResultItems = results?.results?.map((item) => {
     if (isTvSeries(item)) {
@@ -23,11 +43,7 @@ export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
           <td>{item.id}</td>
           <td>{item.name}</td>
           <td>{item.first_air_date}</td>
-          <td>
-            <button type='submit' name='tmdbId' value={MatchPageState.shape.tmdbId.encode(item.id)}>
-              Choose
-            </button>
-          </td>
+          <td>{renderChooseButton(item.id)}</td>
         </tr>
       );
     }
@@ -36,16 +52,7 @@ export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
         <td>{item.id}</td>
         <td>{item.title}</td>
         <td>{item.release_date}</td>
-        <td>
-          <button
-            class='button is-secondary'
-            type='submit'
-            name='tmdbId'
-            value={MatchPageState.shape.tmdbId.encode(item.id)}
-          >
-            Choose
-          </button>
-        </td>
+        <td>{renderChooseButton(item.id)}</td>
       </tr>
     );
   });
@@ -58,6 +65,9 @@ export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search }) => {
         <div class='field has-addons'>
           <div class='control is-flex-grow-1'>
             <input
+              autofocus
+              required
+              minlength={2}
               class='input'
               type='text'
               name='search'

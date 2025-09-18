@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient } from '@/../prisma/generated/prisma';
 import { FileDestinationPath } from '@/app/views/components/FileDestinationPath';
 import { Layout } from '@/app/views/layouts/Layout';
+import { PrismaClient } from '@/generated/prisma';
 import { getRelativePath } from '@/util/file';
 
 const prisma = new PrismaClient();

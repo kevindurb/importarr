@@ -1,4 +1,4 @@
-import { PrismaClient, type SourceFile } from '@/../prisma/generated/prisma';
+import { PrismaClient, type SourceFile } from '@/generated/prisma';
 import { DefaultService as Tmdb } from '@/generated/tmdb';
 import {
   createMatchForSourceFileToMovie,
