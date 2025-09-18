@@ -1,6 +1,5 @@
 import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
-import { Layout } from '@/app/views/layouts/Layout';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
 
@@ -65,7 +64,7 @@ export const FilesListPage: FC = async () => {
   });
 
   return (
-    <Layout>
+    <>
       <div class='is-flex is-justify-content-space-between is-align-items-center'>
         <h1 class='title'>Matching</h1>
         <details class='dropdown is-active'>
@@ -91,6 +90,6 @@ export const FilesListPage: FC = async () => {
         </thead>
         <tbody>{filesList}</tbody>
       </table>
-    </Layout>
+    </>
   );
 };

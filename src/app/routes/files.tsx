@@ -12,10 +12,18 @@ import {
 import { refreshFiles } from '@/domain/sourceFileImporter';
 import { prisma } from '@/infrastructure/prisma';
 import { tmdb } from '@/infrastructure/tmdb';
+import { Layout } from '../views/layouts/Layout';
 
 export const filesRouter = new Hono();
 
-filesRouter.get('/', (c) => c.html(<FilesListPage />));
+filesRouter.get('/', (c) =>
+  c.html(
+    <Layout req={c.req}>
+      <FilesListPage />
+    </Layout>,
+  ),
+);
+
 filesRouter.get('/refresh', async (c) => {
   await refreshFiles();
   await refreshUnmatchedFiles();
@@ -35,13 +43,15 @@ filesRouter.get('/:fileId/match', zValidator('query', MatchPageState), async (c)
   const { isTv, search, tmdbId, seasonEpisode } = c.req.valid('query');
 
   return c.html(
-    <MatchWizardPage
-      fileId={c.req.param('fileId')}
-      isTv={isTv}
-      search={search}
-      tmdbId={tmdbId}
-      seasonEpisode={seasonEpisode}
-    />,
+    <Layout req={c.req}>
+      <MatchWizardPage
+        fileId={c.req.param('fileId')}
+        isTv={isTv}
+        search={search}
+        tmdbId={tmdbId}
+        seasonEpisode={seasonEpisode}
+      />
+    </Layout>,
   );
 });
 

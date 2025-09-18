@@ -1,8 +1,13 @@
+import type { HonoRequest } from 'hono';
 import { html } from 'hono/html';
-import type { FC } from 'hono/jsx';
+import type { FC, PropsWithChildren } from 'hono/jsx';
 import { Nav } from '@/app/views/components/Nav';
 
-export const Layout: FC = ({ children }) => html`
+type Props = PropsWithChildren & {
+  req: HonoRequest;
+};
+
+export const Layout: FC<Props> = ({ children, req }) => html`
   <!doctype html>
   ${(
     <html lang='en' data-bs-theme='dark'>
@@ -17,10 +22,8 @@ export const Layout: FC = ({ children }) => html`
         <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css' />
       </head>
       <body class='has-navbar-fixed-top'>
-        <main class='container'>
-          <Nav />
-          {children}
-        </main>
+        <Nav req={req} />
+        <main class='container'>{children}</main>
       </body>
     </html>
   )}

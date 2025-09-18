@@ -1,7 +1,6 @@
 import type { FC } from 'hono/jsx';
 import type z from 'zod';
 import type { SeasonEpisode } from '@/app/validators/CreateMatchBody';
-import { Layout } from '@/app/views/layouts/Layout';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
 import { ChooseEpisodeStep } from './ChooseEpisodeStep';
@@ -47,9 +46,9 @@ export const MatchWizardPage: FC<Props> = async ({
   };
 
   return (
-    <Layout>
+    <>
       <h1 class='title'>{getRelativePath(file)}</h1>
       {renderStep()}
-    </Layout>
+    </>
   );
 };

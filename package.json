@@ -28,6 +28,7 @@
     "bootstrap-icons": "^1.13.1",
     "bulma": "^1.0.4",
     "byte-size": "^9.0.1",
+    "classnames": "^2.5.1",
     "hono": "^4.9.6",
     "zod": "^4.1.8"
   }
