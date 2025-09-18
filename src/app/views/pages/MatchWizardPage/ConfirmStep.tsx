@@ -2,8 +2,8 @@ import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
 import type z from 'zod';
 import { CreateMatchBody, type SeasonEpisode } from '@/app/validators/CreateMatchBody';
-import { PrismaClient } from '@/generated/prisma';
-import { DefaultService as Tmdb } from '@/generated/tmdb';
+import { prisma } from '@/infrastructure/prisma';
+import { tmdb } from '@/infrastructure/tmdb';
 import { getRelativePath } from '@/util/file';
 import { isTvSeries } from '@/util/tmdb';
 
@@ -14,18 +14,16 @@ type Props = {
   seasonEpisode?: z.infer<typeof SeasonEpisode>;
 };
 
-const prisma = new PrismaClient();
-
 export const ConfirmStep: FC<Props> = async ({ fileId, isTv, tmdbId, seasonEpisode }) => {
   const file = await prisma.sourceFile.findUniqueOrThrow({
     where: { id: fileId },
   });
   const item = isTv
-    ? await Tmdb.tvSeriesDetails({ seriesId: tmdbId })
-    : await Tmdb.movieDetails({ movieId: tmdbId });
+    ? await tmdb.tvSeriesDetails({ seriesId: tmdbId })
+    : await tmdb.movieDetails({ movieId: tmdbId });
 
   const season = isTv
-    ? await Tmdb.tvSeasonDetails({ seriesId: tmdbId, seasonNumber: seasonEpisode?.season! })
+    ? await tmdb.tvSeasonDetails({ seriesId: tmdbId, seasonNumber: seasonEpisode?.season! })
     : undefined;
   const episode = season?.episodes?.find(
     (episode) => episode.episode_number === seasonEpisode?.episode,

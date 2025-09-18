@@ -1,10 +1,8 @@
 import type { FC } from 'hono/jsx';
 import { FileDestinationPath } from '@/app/views/components/FileDestinationPath';
 import { Layout } from '@/app/views/layouts/Layout';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
-
-const prisma = new PrismaClient();
 
 export const ImportListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({

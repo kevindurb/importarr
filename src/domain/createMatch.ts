@@ -1,12 +1,11 @@
-import { PrismaClient, type SourceFile, type TVSeries } from '@/generated/prisma';
-import { DefaultService as Tmdb } from '@/generated/tmdb';
-
-const prisma = new PrismaClient();
+import type { SourceFile, TVSeries } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
+import { tmdb } from '@/infrastructure/tmdb';
 
 type TmdbMovieListItem = NonNullable<
-  Awaited<ReturnType<typeof Tmdb.searchMovie>>['results']
+  Awaited<ReturnType<typeof tmdb.searchMovie>>['results']
 >[number];
-type TmdbTvListItem = NonNullable<Awaited<ReturnType<typeof Tmdb.searchTv>>['results']>[number];
+type TmdbTvListItem = NonNullable<Awaited<ReturnType<typeof tmdb.searchTv>>['results']>[number];
 
 export const createMatchForSourceFileToMovie = async (
   sourceFile: SourceFile,
@@ -38,10 +37,10 @@ export const createMatchForSourceFileToMovie = async (
 };
 
 const upsertAllEpisodesForSeries = async (tmdbId: number, tvSeries: TVSeries) => {
-  const tvDetails = await Tmdb.tvSeriesDetails({ seriesId: tmdbId });
+  const tvDetails = await tmdb.tvSeriesDetails({ seriesId: tmdbId });
   const seasons = await Promise.all(
     tvDetails?.seasons?.map((season) =>
-      Tmdb.tvSeasonDetails({
+      tmdb.tvSeasonDetails({
         seriesId: tmdbId,
         seasonNumber: season.season_number!,
       }),

@@ -1,11 +1,10 @@
 import type { FC } from 'hono/jsx';
-import { PrismaClient, type SourceFile } from '@/generated/prisma';
+import type { SourceFile } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 
 type Props = {
   file: SourceFile;
 };
-
-const prisma = new PrismaClient();
 
 export const FileMatchStatus: FC<Props> = async ({ file }) => {
   if (file.movieId) {

@@ -1,8 +1,7 @@
 import path from 'node:path';
-import { type Movie, PrismaClient, type SourceFile, type TVEpisode } from '@/generated/prisma';
+import type { Movie, SourceFile, TVEpisode } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 import { getLibraryMoviesPath, getLibraryTVShowsPath } from '@/util/env';
-
-const prisma = new PrismaClient();
 
 const buildDestinationPathForMovie = (file: SourceFile, movie: Movie) => {
   const releaseDate = new Date(movie.releaseDate);

@@ -6,9 +6,8 @@ import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
 import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
 import { refreshFiles } from '@/domain/sourceFileImporter';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 
-const prisma = new PrismaClient();
 export const filesRouter = new Hono();
 
 filesRouter.get('/', (c) => c.html(<FilesListPage />));

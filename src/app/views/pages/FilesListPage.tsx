@@ -2,10 +2,8 @@ import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
 import { FileMatchStatus } from '@/app/views/components/FileMatchStatus';
 import { Layout } from '@/app/views/layouts/Layout';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
-
-const prisma = new PrismaClient();
 
 export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({

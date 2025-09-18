@@ -1,8 +1,8 @@
 import type { FC } from 'hono/jsx';
 import { MatchPageState } from '@/app/validators/MatchPageState';
 import { getMetadataForSourceFile } from '@/domain/metadata';
-import { PrismaClient } from '@/generated/prisma';
-import { DefaultService as Tmdb } from '@/generated/tmdb';
+import { prisma } from '@/infrastructure/prisma';
+import { tmdb } from '@/infrastructure/tmdb';
 import { isTvSeries } from '@/util/tmdb';
 
 type Props = {
@@ -10,8 +10,6 @@ type Props = {
   isTv: boolean;
   search?: string;
 };
-
-const prisma = new PrismaClient();
 
 export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search: propsSearch }) => {
   const file = await prisma.sourceFile.findUniqueOrThrow({ where: { id: fileId } });
@@ -21,8 +19,8 @@ export const SearchTmdbStep: FC<Props> = async ({ fileId, isTv, search: propsSea
   const search = propsSearch === undefined ? defaultSearch : propsSearch;
   const results = search
     ? isTv
-      ? await Tmdb.searchTv({ query: search })
-      : await Tmdb.searchMovie({ query: search })
+      ? await tmdb.searchTv({ query: search })
+      : await tmdb.searchMovie({ query: search })
     : undefined;
 
   const renderChooseButton = (id?: number) => (

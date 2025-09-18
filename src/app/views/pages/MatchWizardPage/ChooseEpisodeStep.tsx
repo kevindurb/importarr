@@ -1,23 +1,21 @@
 import type { FC } from 'hono/jsx';
 import { MatchPageState } from '@/app/validators/MatchPageState';
 import { getMetadataForSourceFile, isTv } from '@/domain/metadata';
-import { PrismaClient } from '@/generated/prisma';
-import { DefaultService as Tmdb } from '@/generated/tmdb';
+import { prisma } from '@/infrastructure/prisma';
+import { tmdb } from '@/infrastructure/tmdb';
 
 type Props = {
   fileId: string;
   tmdbId: number;
 };
 
-const prisma = new PrismaClient();
-
 export const ChooseEpisodeStep: FC<Props> = async ({ fileId, tmdbId }) => {
   const file = await prisma.sourceFile.findUniqueOrThrow({ where: { id: fileId } });
   const metadata = getMetadataForSourceFile(file);
-  const series = await Tmdb.tvSeriesDetails({ seriesId: tmdbId });
+  const series = await tmdb.tvSeriesDetails({ seriesId: tmdbId });
   const seasons = await Promise.all(
     series.seasons?.map((season) =>
-      Tmdb.tvSeasonDetails({ seriesId: tmdbId, seasonNumber: season.season_number! }),
+      tmdb.tvSeasonDetails({ seriesId: tmdbId, seasonNumber: season.season_number! }),
     ) ?? [],
   );
 

@@ -2,7 +2,7 @@ import type { FC } from 'hono/jsx';
 import type z from 'zod';
 import type { SeasonEpisode } from '@/app/validators/CreateMatchBody';
 import { Layout } from '@/app/views/layouts/Layout';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
 import { ChooseEpisodeStep } from './ChooseEpisodeStep';
 import { ChooseMediaTypeStep } from './ChooseMediaTypeStep';
@@ -16,8 +16,6 @@ type Props = {
   tmdbId?: number;
   seasonEpisode?: z.infer<typeof SeasonEpisode>;
 };
-
-const prisma = new PrismaClient();
 
 export const MatchWizardPage: FC<Props> = async ({
   fileId,

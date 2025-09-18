@@ -1,8 +1,6 @@
-import { PrismaClient } from '@/generated/prisma';
 import { type File, getAllFilesInDir } from '@/infrastructure/filesService';
+import { prisma } from '@/infrastructure/prisma';
 import { getSourcePath } from '@/util/env';
-
-const prisma = new PrismaClient();
 
 const addNewFiles = async (files: File[]) => {
   console.log('Creating new files...');
