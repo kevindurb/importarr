@@ -43,7 +43,7 @@ export const ImportListPage: FC = async () => {
           </div>
         </details>
       </div>
-      <table class='table is-vcentered'>
+      <table class='table is-vcentered is-fullwidth'>
         <thead>
           <tr>
             <th>Source</th>
