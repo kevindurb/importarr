@@ -2,6 +2,7 @@ import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
+import { Icon } from '../elements/Icon';
 
 export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({
@@ -26,11 +27,11 @@ export const FilesListPage: FC = async () => {
         <td>{byteSize(Number(file.fileSize)).toString()}</td>
         <td>
           {file.movieId ? (
-            <i class='material-symbols-outlined'>movie</i>
+            <Icon name='movie' />
           ) : file.tvEpisodeId ? (
-            <i class='material-symbols-outlined'>tv</i>
+            <Icon name='tv' />
           ) : (
-            <i class='material-symbols-outlined'>link_off</i>
+            <Icon name='link_off' />
           )}
         </td>
         <td>
@@ -50,11 +51,11 @@ export const FilesListPage: FC = async () => {
         <td>
           <div class='buttons is-flex-wrap-nowrap'>
             <a href={`/files/${file.id}/match`} class='button is-dark'>
-              <i class='material-symbols-outlined'>edit</i>
+              <Icon name='edit' />
             </a>
             <form method='post' action={`/files/${file.id}/approve`}>
               <button class='button is-success' disabled={!hasMatch} type='submit'>
-                <i class='material-symbols-outlined'>check</i>
+                <Icon name='check' />
               </button>
             </form>
           </div>

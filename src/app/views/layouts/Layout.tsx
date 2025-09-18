@@ -15,15 +15,11 @@ export const Layout: FC<Props> = ({ children, req }) => html`
         <meta charset='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='color-scheme' content='light dark' />
-        <link
-          href='https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined'
-          rel='stylesheet'
-        />
         <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css' />
       </head>
       <body class='has-navbar-fixed-top'>
         <Nav req={req} />
-        <main class='container'>{children}</main>
+        <main class='container my-4'>{children}</main>
       </body>
     </html>
   )}

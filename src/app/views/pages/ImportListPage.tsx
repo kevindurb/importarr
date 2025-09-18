@@ -2,6 +2,7 @@ import type { FC } from 'hono/jsx';
 import { FileDestinationPath } from '@/app/views/components/FileDestinationPath';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
+import { Icon } from '../elements/Icon';
 
 export const ImportListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({
@@ -19,7 +20,7 @@ export const ImportListPage: FC = async () => {
         <td>
           <form method='post' action={`/import/${file.id}`}>
             <button type='submit' class='button is-danger'>
-              <i class='material-symbols-outlined'>download</i>
+              <Icon name='download' />
             </button>
           </form>
         </td>
