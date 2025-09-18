@@ -8,6 +8,8 @@ type Props = {
   name: IconName;
 };
 
+export const Icon: FC<Props> = ({ name }) => <i class='material-symbols-outlined'>{name}</i>;
+
 const iconQueryString = querystring.stringify({
   family: 'Material Symbols Outlined',
   icon_names: iconNames.join(','),
@@ -16,9 +18,4 @@ const iconQueryString = querystring.stringify({
 
 const ICON_BASE_URL = `https://fonts.googleapis.com/icon?&${iconQueryString}`;
 
-export const Icon: FC<Props> = ({ name }) => (
-  <>
-    <link href={ICON_BASE_URL} rel='stylesheet' />
-    <i class='material-symbols-outlined'>{name}</i>
-  </>
-);
+export const IconStylesheetLink: FC = () => <link href={ICON_BASE_URL} rel='stylesheet' />;
