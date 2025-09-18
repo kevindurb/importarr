@@ -5,8 +5,13 @@ import { MatchPageState } from '@/app/validators/MatchPageState';
 import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
 import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
+import {
+  createMatchForSourceFileToMovie,
+  createMatchForSourceFileToTVEpisode,
+} from '@/domain/createMatch';
 import { refreshFiles } from '@/domain/sourceFileImporter';
 import { prisma } from '@/infrastructure/prisma';
+import { tmdb } from '@/infrastructure/tmdb';
 
 export const filesRouter = new Hono();
 
@@ -47,9 +52,17 @@ filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c
     where: { id: fileId },
   });
   if (data.isTv) {
-    console.log('match tv', file);
+    if (!data.seasonEpisode) throw new Error('TV match requires season and episode');
+    const tvSeries = await tmdb.tvSeriesDetails({ seriesId: data.tmdbId });
+    await createMatchForSourceFileToTVEpisode(
+      file,
+      tvSeries,
+      data.seasonEpisode.season,
+      data.seasonEpisode.episode,
+    );
   } else {
-    console.log('match movie', file);
+    const movie = await tmdb.movieDetails({ movieId: data.tmdbId });
+    await createMatchForSourceFileToMovie(file, movie);
   }
   return c.redirect('/files');
 });

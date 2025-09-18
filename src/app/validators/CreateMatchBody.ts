@@ -3,13 +3,16 @@ import { stringToInt } from '../../util/zod';
 
 export const SeasonEpisode = z.codec(
   z.string(),
-  z.object({
-    season: z.number(),
-    episode: z.number(),
-  }),
+  z
+    .object({
+      season: z.number(),
+      episode: z.number(),
+    })
+    .optional(),
   {
-    encode: ({ season, episode }) => `${season}|${episode}`,
+    encode: (value) => (value ? `${value.season}|${value.episode}` : ''),
     decode: (value) => {
+      if (!value) return;
       const [season, episode] = value.split('|');
       return {
         season: Number.parseInt(season ?? '0'),

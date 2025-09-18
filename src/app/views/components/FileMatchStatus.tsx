@@ -11,12 +11,7 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     const movie = await prisma.movie.findUniqueOrThrow({
       where: { id: file.movieId },
     });
-    return (
-      <>
-        <b>{movie.title}</b>
-        <a href={`/files/${file.id}/match`}>Change Match</a>
-      </>
-    );
+    return <>{movie.title}</>;
   }
   if (file.tvEpisodeId) {
     const tvEpisode = await prisma.tVEpisode.findUniqueOrThrow({
@@ -27,13 +22,12 @@ export const FileMatchStatus: FC<Props> = async ({ file }) => {
     });
     return (
       <>
-        <a href={`/files/${file.id}/match`}>
-          {tvEpisode.series.name} {tvEpisode.episodeName}
-        </a>
-        <span class='tag is-info mx-1'>S{tvEpisode.seasonNumber}</span>
-        <span class='tag is-info mx-1'>E{tvEpisode.episodeNumber}</span>
+        {tvEpisode.series.name} {tvEpisode.episodeName}
+        <span class='tag is-dark mx-1'>
+          S{tvEpisode.seasonNumber}E{tvEpisode.episodeNumber}
+        </span>
       </>
     );
   }
-  return <a href={`/files/${file.id}/match`}>Create Match</a>;
+  return <>No Match Found</>;
 };

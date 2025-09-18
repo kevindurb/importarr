@@ -19,10 +19,22 @@ export const FilesListPage: FC = async () => {
         <td>{file.fileType}</td>
         <td>{byteSize(Number(file.fileSize)).toString()}</td>
         <td>
+          {file.movieId ? (
+            <i class='material-symbols-outlined'>movie</i>
+          ) : file.tvEpisodeId ? (
+            <i class='material-symbols-outlined'>tv</i>
+          ) : (
+            <i class='material-symbols-outlined'>link_off</i>
+          )}
+        </td>
+        <td>
           <FileMatchStatus file={file} />
         </td>
         <td>
           <div class='buttons is-flex-wrap-nowrap'>
+            <a href={`/files/${file.id}/match`} class='button is-dark'>
+              <i class='material-symbols-outlined'>edit</i>
+            </a>
             <form method='post' action={`/files/${file.id}/approve`}>
               <button class='button is-success' disabled={!hasMatch} type='submit'>
                 <i class='material-symbols-outlined'>check</i>
@@ -55,7 +67,7 @@ export const FilesListPage: FC = async () => {
             <th>File</th>
             <th>Type</th>
             <th>Size</th>
-            <th>Match</th>
+            <th colspan={2}>Match</th>
             <th />
           </tr>
         </thead>
