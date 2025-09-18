@@ -5,7 +5,7 @@ import { getCookie, setCookie } from 'hono/cookie';
 declare module 'hono' {
   interface Context {
     flash: {
-      set(type: string, message: string | string[]): void;
+      set(type: string, ...message: string[]): void;
       get(): Record<string, string[]>;
     };
   }
@@ -29,7 +29,7 @@ export const flashMiddleware = async (c: Context, next: Next) => {
   const cache: Record<string, string[]> = structuredClone(stored);
 
   c.flash = {
-    set(type: string, messages: string | string[]) {
+    set(type: string, ...messages: string[]) {
       const obj = { ...cache };
       if (!obj[type]) obj[type] = [];
       obj[type].push(...messages);
