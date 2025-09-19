@@ -36,6 +36,7 @@ export const Layout: FC<Props> = ({ children, c }) => {
             href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'
           />
           <link rel='stylesheet' href='/css/main.css' />
+          <title>Importarr</title>
         </head>
         <body class='has-navbar-fixed-top'>
           <Nav req={c.req} />
