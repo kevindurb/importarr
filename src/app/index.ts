@@ -20,6 +20,13 @@ app.use(
     },
   }),
 );
+
+app.onError((err, c) => {
+  c.get('session').flash('error', `Server Error: ${err.message}`);
+  const referrer = new URL(c.req.header('Referer') ?? '/');
+  return c.redirect(referrer.pathname);
+});
+
 app.route('/', router);
 
 process.on('SIGTERM', async () => {
