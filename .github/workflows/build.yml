@@ -28,6 +28,7 @@ jobs:
             type=raw,value={{date 'YYYY.MM.DD'}}
 
       - name: Build and push with Buildah
+        id: build
         uses: redhat-actions/buildah-build@v2
         with:
           image: ghcr.io/${{ github.repository }}
