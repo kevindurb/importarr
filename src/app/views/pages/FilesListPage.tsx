@@ -79,7 +79,7 @@ export const FilesListPage: FC = async () => {
           </div>
         </details>
       </div>
-      <table class='table is-vcentered'>
+      <table class='table is-vcentered is-fullwidth'>
         <thead>
           <tr>
             <th>File</th>
