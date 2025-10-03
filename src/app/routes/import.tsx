@@ -15,13 +15,6 @@ importRouter.get('/', (c) =>
   ),
 );
 
-importRouter.post('/:fileId', async (c) => {
-  const file = await prisma.sourceFile.findUniqueOrThrow({ where: { id: c.req.param('fileId') } });
-  await importFileToLibrary(file);
-  c.get('session').flash('success', 'File Imported');
-  return c.redirect('/import');
-});
-
 importRouter.post('/all', async (c) => {
   const files = await prisma.sourceFile.findMany({
     where: { status: 'ReadyToMove' },
@@ -32,5 +25,12 @@ importRouter.post('/all', async (c) => {
   }
 
   c.get('session').flash('success', `${files.length} Files Imported`);
+  return c.redirect('/import');
+});
+
+importRouter.post('/:fileId', async (c) => {
+  const file = await prisma.sourceFile.findUniqueOrThrow({ where: { id: c.req.param('fileId') } });
+  await importFileToLibrary(file);
+  c.get('session').flash('success', 'File Imported');
   return c.redirect('/import');
 });
