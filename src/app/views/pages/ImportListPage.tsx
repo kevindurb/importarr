@@ -36,9 +36,9 @@ export const ImportListPage: FC = async () => {
           <summary class='dropdown-trigger button'>Actions</summary>
           <div class='dropdown-menu'>
             <div class='dropdown-content'>
-              <a class='dropdown-item' href='/import/all'>
-                Import All
-              </a>
+              <form method='post' action='/import/all' class='dropdown-item'>
+                <button type='submit'>Import All</button>
+              </form>
             </div>
           </div>
         </details>
