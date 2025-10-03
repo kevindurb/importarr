@@ -2,11 +2,12 @@ import byteSize from 'byte-size';
 import type { FC } from 'hono/jsx';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
+import { Fab } from '../elements/Fab';
 import { Icon } from '../elements/Icon';
 
 export const FilesListPage: FC = async () => {
   const files = await prisma.sourceFile.findMany({
-    where: { status: { notIn: ['Completed', 'ReadyToMove', 'Error'] } },
+    where: { status: { notIn: ['Completed', 'ReadyToMove', 'Error', 'Missing'] } },
     orderBy: { filePath: 'asc' },
     include: {
       movie: true,
@@ -66,19 +67,7 @@ export const FilesListPage: FC = async () => {
 
   return (
     <>
-      <div class='is-flex is-justify-content-space-between is-align-items-center'>
-        <h1 class='title'>Matching</h1>
-        <details class='dropdown is-active'>
-          <summary class='dropdown-trigger button'>Actions</summary>
-          <div class='dropdown-menu'>
-            <div class='dropdown-content'>
-              <a class='dropdown-item' href='/files/refresh'>
-                Refresh Files
-              </a>
-            </div>
-          </div>
-        </details>
-      </div>
+      <h1 class='title'>Matching</h1>
       <table class='table is-vcentered is-fullwidth'>
         <thead>
           <tr>
@@ -91,6 +80,9 @@ export const FilesListPage: FC = async () => {
         </thead>
         <tbody>{filesList}</tbody>
       </table>
+      <Fab href='/files/refresh'>
+        <Icon name='refresh' />
+      </Fab>
     </>
   );
 };

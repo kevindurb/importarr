@@ -3,6 +3,8 @@ import { MatchPageState } from '@/app/validators/MatchPageState';
 import { getMetadataForSourceFile, isTv } from '@/domain/metadata';
 import { prisma } from '@/infrastructure/prisma';
 import { tmdb } from '@/infrastructure/tmdb';
+import { Fab } from '../../elements/Fab';
+import { Icon } from '../../elements/Icon';
 
 type Props = {
   fileId: string;
@@ -55,12 +57,10 @@ export const ChooseEpisodeStep: FC<Props> = async ({ fileId, tmdbId }) => {
             </select>
           </div>
         </div>
-        <div class='control'>
-          <button type='submit' class='button is-primary'>
-            Continue
-          </button>
-        </div>
       </div>
+      <Fab>
+        <Icon name='arrow_forward' />
+      </Fab>
     </form>
   );
 };

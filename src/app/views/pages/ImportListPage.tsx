@@ -2,6 +2,7 @@ import type { FC } from 'hono/jsx';
 import { FileDestinationPath } from '@/app/views/components/FileDestinationPath';
 import { prisma } from '@/infrastructure/prisma';
 import { getRelativePath } from '@/util/file';
+import { Fab } from '../elements/Fab';
 import { Icon } from '../elements/Icon';
 
 export const ImportListPage: FC = async () => {
@@ -30,19 +31,7 @@ export const ImportListPage: FC = async () => {
 
   return (
     <>
-      <div class='is-flex is-justify-content-space-between is-align-items-center'>
-        <h1 class='title'>Import</h1>
-        <details class='dropdown is-active'>
-          <summary class='dropdown-trigger button'>Actions</summary>
-          <div class='dropdown-menu'>
-            <div class='dropdown-content'>
-              <form method='post' action='/import/all' class='dropdown-item'>
-                <button type='submit'>Import All</button>
-              </form>
-            </div>
-          </div>
-        </details>
-      </div>
+      <h1 class='title'>Import</h1>
       <table class='table is-vcentered is-fullwidth'>
         <thead>
           <tr>
@@ -53,6 +42,11 @@ export const ImportListPage: FC = async () => {
         </thead>
         <tbody>{filesList}</tbody>
       </table>
+      <form method='post' action='/import/all' class='dropdown-item'>
+        <Fab>
+          <Icon name='download' />
+        </Fab>
+      </form>
     </>
   );
 };

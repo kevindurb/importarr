@@ -32,14 +32,14 @@ export const Nav: FC<Props> = async ({ req }) => {
             href='/files'
           >
             Matching
-            {countToMatch && <div class='tag is-danger'>{countToMatch}</div>}
+            {!!countToMatch && <div class='tag is-danger'>{countToMatch}</div>}
           </a>
           <a
             class={clx('navbar-item', { 'has-text-primary': req.path.startsWith('/import') })}
             href='/import'
           >
             Import
-            {countToImport && <div class='tag is-danger'>{countToImport}</div>}
+            {!!countToImport && <div class='tag is-danger'>{countToImport}</div>}
           </a>
         </div>
       </div>
