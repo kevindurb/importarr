@@ -4,10 +4,9 @@ import { CreateMatchBody } from '@/app/validators/CreateMatchBody';
 import { MatchPageState } from '@/app/validators/MatchPageState';
 import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
-import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
 import { createMatchForSourceFile } from '@/domain/createMatch';
-import { refreshFiles } from '@/domain/sourceFileImporter';
 import { prisma } from '@/infrastructure/prisma';
+import { refreshFiles } from '../jobs/refreshFiles';
 import type { AppEnv } from '../types';
 import { Layout } from '../views/layouts/Layout';
 
@@ -22,9 +21,8 @@ filesRouter.get('/', (c) =>
 );
 
 filesRouter.get('/refresh', async (c) => {
-  await refreshFiles();
-  await refreshUnmatchedFiles();
-  c.get('session').flash('info', 'Files Refreshed');
+  refreshFiles();
+  c.get('session').flash('info', 'Files Refreshing');
   return c.redirect('/files');
 });
 

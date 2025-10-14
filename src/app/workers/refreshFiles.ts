@@ -1,6 +1,8 @@
+import { refreshUnmatchedFiles } from '@/domain/autoMatcher';
 import { type File, getAllFilesInDir } from '@/infrastructure/filesService';
 import { prisma } from '@/infrastructure/prisma';
-import { getSourcePath } from '@/util/env';
+
+declare var self: Worker;
 
 const addNewFiles = async (files: File[]) => {
   console.log('Creating new files...');
@@ -44,11 +46,11 @@ const markMissingFiles = async (files: File[]) => {
   });
 };
 
-export const refreshFiles = async () => {
-  const sourcePath = getSourcePath();
-
-  const files = await getAllFilesInDir(sourcePath);
+self.onmessage = async (event: MessageEvent<{ sourcePath: string }>) => {
+  const files = await getAllFilesInDir(event.data.sourcePath);
   await addNewFiles(files);
   await markMissingFiles(files);
   console.log('Found files', files);
+
+  await refreshUnmatchedFiles();
 };
