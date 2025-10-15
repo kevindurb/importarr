@@ -37,3 +37,7 @@ export const getAllFilesInDir = async (dir: string): Promise<File[]> => {
 
   return files;
 };
+
+export const deleteFile = async (filePath: string) => {
+  await fs.rm(filePath);
+};

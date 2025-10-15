@@ -2,14 +2,16 @@ import querystring from 'node:querystring';
 import type { FC } from 'hono/jsx';
 
 const iconNames = [
-  'download',
-  'movie',
-  'tv',
-  'link_off',
-  'edit',
-  'check',
-  'refresh',
   'arrow_forward',
+  'check',
+  'delete',
+  'download',
+  'edit',
+  'link_off',
+  'movie',
+  'refresh',
+  'tv',
+  'undo',
 ] as const;
 type IconName = (typeof iconNames)[number];
 

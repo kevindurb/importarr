@@ -19,11 +19,18 @@ export const ImportListPage: FC = async () => {
           <FileDestinationPath file={file} />
         </td>
         <td>
-          <form method='post' action={`/import/${file.id}`}>
-            <button type='submit' class='button is-danger'>
-              <Icon name='download' />
-            </button>
-          </form>
+          <div class='buttons is-flex-wrap-nowrap is-justify-content-flex-end'>
+            <form method='post' action={`/files/${file.id}/undo`}>
+              <button type='submit' class='button is-warning'>
+                <Icon name='undo' />
+              </button>
+            </form>
+            <form method='post' action={`/import/${file.id}`}>
+              <button type='submit' class='button is-danger'>
+                <Icon name='download' />
+              </button>
+            </form>
+          </div>
         </td>
       </tr>
     );

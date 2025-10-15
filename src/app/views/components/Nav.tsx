@@ -10,7 +10,7 @@ type Props = {
 
 export const Nav: FC<Props> = async ({ req }) => {
   const countToMatch = await prisma.sourceFile.count({
-    where: { status: { notIn: ['Completed', 'ReadyToMove', 'Error'] } },
+    where: { status: { notIn: ['Completed', 'ReadyToMove', 'Error', 'Missing'] } },
   });
   const countToImport = await prisma.sourceFile.count({
     where: { status: 'ReadyToMove' },

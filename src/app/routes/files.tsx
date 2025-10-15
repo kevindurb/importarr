@@ -5,6 +5,7 @@ import { MatchPageState } from '@/app/validators/MatchPageState';
 import { FilesListPage } from '@/app/views/pages/FilesListPage';
 import { MatchWizardPage } from '@/app/views/pages/MatchWizardPage/MatchWizardPage';
 import { createMatchForSourceFile } from '@/domain/createMatch';
+import { deleteFile } from '@/infrastructure/filesService';
 import { prisma } from '@/infrastructure/prisma';
 import { refreshFiles } from '../jobs/refreshFiles';
 import type { AppEnv } from '../types';
@@ -59,6 +60,30 @@ filesRouter.post('/:fileId/match', zValidator('form', CreateMatchBody), async (c
     where: { id: fileId },
   });
   await createMatchForSourceFile(file, tmdbId, isTv, seasonEpisode?.season, seasonEpisode?.episode);
+  await prisma.sourceFile.update({ where: { id: file.id }, data: { status: 'ReadyToMove' } });
   c.get('session').flash('success', 'File Matched');
   return c.redirect('/files');
+});
+
+filesRouter.post('/:fileId/delete', async (c) => {
+  const id = c.req.param('fileId');
+  const sourceFile = await prisma.sourceFile.delete({ where: { id } });
+  if (sourceFile) {
+    try {
+      await deleteFile(sourceFile.filePath);
+    } catch {
+      c.get('session').flash('error', 'Error Deleting File');
+      return c.redirect('/files');
+    }
+  }
+
+  c.get('session').flash('success', 'Deleted File');
+  return c.redirect('/files');
+});
+
+filesRouter.post('/:fileId/undo', async (c) => {
+  const id = c.req.param('fileId');
+  await prisma.sourceFile.update({ where: { id }, data: { status: 'NeedsConfirmation' } });
+  c.get('session').flash('info', 'Updated File');
+  return c.redirect('/import');
 });

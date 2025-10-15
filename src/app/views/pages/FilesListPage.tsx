@@ -50,10 +50,15 @@ export const FilesListPage: FC = async () => {
           )}
         </td>
         <td>
-          <div class='buttons is-flex-wrap-nowrap'>
+          <div class='buttons is-flex-wrap-nowrap is-justify-content-flex-end'>
             <a href={`/files/${file.id}/match`} class='button is-dark'>
               <Icon name='edit' />
             </a>
+            <form method='post' action={`/files/${file.id}/delete`}>
+              <button class='button is-danger' type='submit'>
+                <Icon name='delete' />
+              </button>
+            </form>
             <form method='post' action={`/files/${file.id}/approve`}>
               <button class='button is-success' disabled={!hasMatch} type='submit'>
                 <Icon name='check' />
