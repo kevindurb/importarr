@@ -7,6 +7,4 @@ export const refreshFiles = () => {
   worker.postMessage({ sourcePath });
 };
 
-export const startSchedule = () => {
-  return new Cron('0 * * * *', refreshFiles);
-};
+export const startSchedule = () => new Cron('0 * * * *', refreshFiles);
