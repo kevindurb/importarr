@@ -47,10 +47,13 @@ const markMissingFiles = async (files: File[]) => {
 };
 
 self.onmessage = async (event: MessageEvent<{ sourcePath: string }>) => {
+  console.log('Starting refresh');
   const files = await getAllFilesInDir(event.data.sourcePath);
   await addNewFiles(files);
   await markMissingFiles(files);
   console.log('Found files', files);
-
   await refreshUnmatchedFiles();
+  console.log('Done refreshing files');
+
+  self.terminate();
 };
