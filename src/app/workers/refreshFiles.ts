@@ -54,6 +54,4 @@ self.onmessage = async (event: MessageEvent<{ sourcePath: string }>) => {
   console.log('Found files', files);
   await refreshUnmatchedFiles();
   console.log('Done refreshing files');
-
-  self.terminate();
 };
